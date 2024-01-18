@@ -6,7 +6,7 @@ const request = require("request");
 const app = express();
 app.use(bodyParser.json());
 const upload = multer();
-const port = process.env.PORT | 3000;
+const port = process.env.PORT || 3000;
 const token = process.env.LINE_TOKEN;
 
 app.post("/line_hook", upload.none(), (req, res) => {
