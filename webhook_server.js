@@ -6,27 +6,25 @@ const request = require("request");
 const app = express();
 app.use(bodyParser.json());
 const upload = multer();
-const port = process.env.PORT;
-const token = process.env.TOKEN;
+const port = process.env.PORT | 3000;
+const token = process.env.LINE_TOKEN;
 
 app.post("/line_hook", upload.none(), (req, res) => {
+  const { alertname, namespace } = req.body.commonLabels;
+  const { summary } = req.body.commonAnnotations;
+  const time = new Date();
+  console.log("Alert received at: " + time.toLocaleString());
   console.log(req.body);
-  res.send("done");
-
-  const { alertname, instance, job, severity } = req.body.commonLabels;
-
   const message =
-    "Alert Name: " +
+    "\nAlert Name: " +
     alertname +
     "\n" +
-    "Instance: " +
-    instance +
+    "Namespace: " +
+    namespace +
     "\n" +
-    "Job: " +
-    job +
-    "\n" +
-    "Severity: " +
-    severity;
+    "Summary: " +
+    summary +
+    "\n";
 
   const formData = {
     message,
@@ -48,6 +46,7 @@ app.post("/line_hook", upload.none(), (req, res) => {
       return "done";
     }
   );
+  res.send("done");
 });
 
 app.listen(port, () => {
