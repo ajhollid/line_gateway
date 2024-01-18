@@ -1,6 +1,6 @@
 # LINE Notify Webhook Forwarder
 
-### Node Express server for forwarding Prometheus AlertManager alerts
+### _Node Express server for forwarding Prometheus AlertManager alerts_
 
 Provides a Node docker image running the included Express server
 
@@ -14,4 +14,4 @@ LINE token can be obtained at [LINE Notify Website](https://notify-bot.line.me/e
 
 - PORT=&lt;port&gt;
 
-Optionally specify a port, default port is **3000**
+Server listens by default on port **3000**. Use the PORT environmental variable to specify a different port
