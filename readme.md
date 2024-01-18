@@ -15,3 +15,5 @@ LINE token can be obtained at [LINE Notify Website](https://notify-bot.line.me/e
 - PORT=&lt;port&gt;
 
 Server listens by default on port **3000**. Use the PORT environmental variable to specify a different port
+
+![Screenshot](screenshot.png)

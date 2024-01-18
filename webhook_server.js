@@ -10,21 +10,37 @@ const port = process.env.PORT || 3000;
 const token = process.env.LINE_TOKEN;
 
 app.post("/line_hook", upload.none(), (req, res) => {
-  const { alertname, namespace } = req.body.commonLabels;
-  const { summary } = req.body.commonAnnotations;
+  const { alertname, namespace, severity, pod, deployment } =
+    req.body.commonLabels;
+  const { summary, description } = req.body.commonAnnotations;
   const time = new Date();
+  console.log("\n ***********************");
   console.log("Alert received at: " + time.toLocaleString());
+  console.log("*********************** \n");
   console.log(req.body);
-  const message =
-    "\nAlert Name: " +
-    alertname +
-    "\n" +
-    "Namespace: " +
-    namespace +
-    "\n" +
-    "Summary: " +
-    summary +
-    "\n";
+
+  let message = "\nAlert Name: " + alertname;
+  if (severity) {
+    message = message + "\n" + "Severity: ";
+    if (severity == "none") {
+      message += "🔵 ";
+    }
+    if (severity == "warning") {
+      message += "🟡 ";
+    }
+    if (severity == "critical") {
+      message += "🔴 ";
+    }
+    message += severity;
+  }
+
+  if (summary) {
+    message = message + "\n" + "Summary: " + summary;
+  }
+
+  if (description) {
+    message = message + "\n" + "Description: " + description;
+  }
 
   const formData = {
     message,

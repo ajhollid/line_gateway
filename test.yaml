@@ -1,0 +1,51 @@
+{
+  receiver: "kube-monitor/config-example/line",
+  status: "firing",
+  alerts:
+    [
+      {
+        status: "firing",
+        labels: [Object],
+        annotations: [Object],
+        startsAt: "2024-01-18T05:40:08.168Z",
+        endsAt: "0001-01-01T00:00:00Z",
+        generatorURL: "http://stable-kube-prometheus-sta-prometheus.kube-monitor:9090/graph?g0.expr=absent%28up%7Bjob%3D%22kube-controller-manager%22%7D+%3D%3D+1%29&g0.tab=1",
+        fingerprint: "08613a1ed62ddb15",
+      },
+      {
+        status: "firing",
+        labels: [Object],
+        annotations: [Object],
+        startsAt: "2024-01-18T05:40:09.879Z",
+        endsAt: "0001-01-01T00:00:00Z",
+        generatorURL: "http://stable-kube-prometheus-sta-prometheus.kube-monitor:9090/graph?g0.expr=absent%28up%7Bjob%3D%22kube-proxy%22%7D+%3D%3D+1%29&g0.tab=1",
+        fingerprint: "aa0239d8c71a8408",
+      },
+      {
+        status: "firing",
+        labels: [Object],
+        annotations: [Object],
+        startsAt: "2024-01-18T05:40:12.841Z",
+        endsAt: "0001-01-01T00:00:00Z",
+        generatorURL: "http://stable-kube-prometheus-sta-prometheus.kube-monitor:9090/graph?g0.expr=absent%28up%7Bjob%3D%22kube-scheduler%22%7D+%3D%3D+1%29&g0.tab=1",
+        fingerprint: "687e9e7b4d66b55b",
+      },
+      {
+        status: "firing",
+        labels: [Object],
+        annotations: [Object],
+        startsAt: "2024-01-18T05:25:15.075Z",
+        endsAt: "0001-01-01T00:00:00Z",
+        generatorURL: "http://stable-kube-prometheus-sta-prometheus.kube-monitor:9090/graph?g0.expr=vector%281%29&g0.tab=1",
+        fingerprint: "e64f2a47adc08027",
+      },
+    ],
+  groupLabels: {},
+  commonLabels:
+    { prometheus: "kube-monitor/stable-kube-prometheus-sta-prometheus" },
+  commonAnnotations: {},
+  externalURL: "http://stable-kube-prometheus-sta-alertmanager.kube-monitor:9093",
+  version: "4",
+  groupKey: "{}:{}",
+  truncatedAlerts: 0,
+}
