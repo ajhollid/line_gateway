@@ -1,3 +1,4 @@
+import TextUtils from "./TextUtils";
 const express = require("express");
 const bodyParser = require("body-parser");
 const multer = require("multer");
@@ -9,28 +10,13 @@ const upload = multer();
 const port = process.env.PORT || 3000;
 const token = process.env.LINE_TOKEN;
 
-app.post("/line_hook", upload.none(), (req, res) => {
-  const { alertname, namespace, severity, pod, deployment } =
-    req.body.commonLabels;
-  const { summary, description } = req.body.commonAnnotations;
-  const time = new Date();
-  console.log("\n ***********************");
-  console.log("Alert received at: " + time.toLocaleString());
-  console.log("*********************** \n");
-  console.log(req.body);
-
+const buildMessage = (alertname, severity, summary, description) => {
   let message = "\nAlert Name: " + alertname;
   if (severity) {
     message = message + "\n" + "Severity: ";
-    if (severity == "none") {
-      message += "🔵 ";
-    }
-    if (severity == "warning") {
-      message += "🟡 ";
-    }
-    if (severity == "critical") {
-      message += "🔴 ";
-    }
+    TextUtils.severityColorLookup[severity]
+      ? (message += TextUtils.severityColorLookup[severity]())
+      : (message += TextUtils.severityColorLookup.default());
     message += severity;
   }
 
@@ -41,15 +27,33 @@ app.post("/line_hook", upload.none(), (req, res) => {
   if (description) {
     message = message + "\n" + "Description: " + description;
   }
+  return message;
+};
 
-  const formData = {
-    message,
-  };
+app.listen(port, () => {
+  console.log(`Listening for webhooks on ${port}`);
+});
 
+app.post("/line_hook", upload.none(), (req, res) => {
+  const { alertname, severity } = req.body.commonLabels; // destructure labels from the request body
+  const { summary, description } = req.body.commonAnnotations; // deconstruct annotations from request body
+  const time = new Date();
+
+  // Log time alert received at
+  console.log(
+    TextUtils.buildBoldLog("Alert received at: " + time.toLocaleString())
+  );
+  //Log body of request
+  console.log(req.body);
+
+  // Build message for LINE Notify
+  const message = buildMessage(alertname, severity, summary, description);
+
+  // Post message to LINE Notify
   request.post(
     {
       url: "https://notify-api.line.me/api/notify",
-      formData: formData,
+      formData: { message },
       auth: {
         bearer: token,
       },
@@ -57,16 +61,12 @@ app.post("/line_hook", upload.none(), (req, res) => {
     (err, httpResponse, body) => {
       if (err) {
         console.log(err);
-        return "error";
+        res.send(err);
       }
-      return "done";
+      console.log("Forward Success, server responded with: ", body);
+      res.send("done");
     }
   );
-  res.send("done");
-});
-
-app.listen(port, () => {
-  console.log(`Listening for webhooks on ${port}`);
 });
 
 // Sample Request
