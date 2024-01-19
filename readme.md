@@ -18,4 +18,18 @@ LINE token can be obtained at [LINE Notify Website](https://notify-bot.line.me/e
 
 Server listens by default on port **3000**. Use the PORT environmental variable to specify a different port
 
+## Getting Started
+
+Use the supplied Dockerfile to create a docker image running the server. Be sure to specify the LINE_TOKEN environmental variable. Optionally specify a PORT environmental variable.
+
+`docker run -e LINE_TOKEN=<token> <ServerImage>`
+
+If you want to run the server without docker then run
+
+`npm install`
+
+followed by
+
+`npm start`
+
 ![Screenshot](screenshot.png)

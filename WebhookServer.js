@@ -1,8 +1,9 @@
-import TextUtils from "./TextUtils";
-const express = require("express");
-const bodyParser = require("body-parser");
-const multer = require("multer");
-const request = require("request");
+import { buildBoldLog, severityColorLookup } from "./TextUtils.js";
+import "dotenv/config";
+import express from "express";
+import bodyParser from "body-parser";
+import multer from "multer";
+import request from "request";
 
 const app = express();
 app.use(bodyParser.json());
@@ -11,12 +12,16 @@ const port = process.env.PORT || 3000;
 const token = process.env.LINE_TOKEN;
 
 const buildMessage = (alertname, severity, summary, description) => {
-  let message = "\nAlert Name: " + alertname;
+  let message = "";
+
+  if (alertname) {
+    message += "\nAlert Name: " + alertname;
+  }
   if (severity) {
     message = message + "\n" + "Severity: ";
-    TextUtils.severityColorLookup[severity]
-      ? (message += TextUtils.severityColorLookup[severity]())
-      : (message += TextUtils.severityColorLookup.default());
+    severityColorLookup[severity]
+      ? (message += severityColorLookup[severity]())
+      : (message += severityColorLookup.default());
     message += severity;
   }
 
@@ -35,15 +40,18 @@ app.listen(port, () => {
 });
 
 app.post("/line_hook", upload.none(), (req, res) => {
-  const { alertname, severity } = req.body.commonLabels; // destructure labels from the request body
-  const { summary, description } = req.body.commonAnnotations; // deconstruct annotations from request body
+  const { alertname, severity } = req.body.commonLabels
+    ? req.body.commonLabels
+    : {}; // destructure labels from the request body
+  const { summary, description } = req.body.commonAnnotations
+    ? req.body.commonAnnotations
+    : {}; // deconstruct annotations from request body
   const time = new Date();
 
   // Log time alert received at
-  console.log(
-    TextUtils.buildBoldLog("Alert received at: " + time.toLocaleString())
-  );
+  console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
   //Log body of request
+
   console.log(req.body);
 
   // Build message for LINE Notify
