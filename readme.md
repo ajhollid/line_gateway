@@ -24,7 +24,7 @@ Use the supplied Dockerfile to create a docker image running the server. Be sure
 
 `docker run -e LINE_TOKEN=<token> <ServerImage>`
 
-If you want to run the server without docker then run
+If you want to run the server without docker then create a `.env` file with the required environmental variables and run
 
 `npm install`
 
