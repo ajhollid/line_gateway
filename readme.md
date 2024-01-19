@@ -20,16 +20,58 @@ Server listens by default on port **3000**. Use the PORT environmental variable 
 
 ## Getting Started
 
+You can run this project in several ways
+
+##### Docker Image
+
 Use the supplied Dockerfile to create a docker image running the server. Be sure to specify the LINE_TOKEN environmental variable. Optionally specify a PORT environmental variable.
 
-`docker run -e LINE_TOKEN=<token> <ServerImage>`
+    `docker build -t <ImageName> .`
+    `docker run -e LINE_TOKEN=<token> <ImageName`
 
-If you want to run the server without docker then create a `.env` file with the required environmental variables and run
+---
 
-`npm install`
+##### Kubernetes Deployment
 
-followed by
+Use the docker image generated above in a Kubernetes deployment. Sample configuration:
 
-`npm start`
+```
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: webhook-forwarder-deployment
+  namespace: default
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook-forwarder
+  template:
+    metadata:
+      labels:
+        app: webhook-forwarder
+    spec:
+      containers:
+        - name: container
+          image: <WebhookDockerImage>
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: LINE_TOKEN
+              value: <LINE_TOKEN>
+```
+
+---
+
+##### Direct Install in Node Environment
+
+1.  Create `.env` file with required environmental variables
+2.  Run `npm install` to install packages
+3.  Run `npm start` to start server
+
+---
 
 ![Screenshot](screenshot.png)
