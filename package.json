@@ -6,10 +6,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node WebhookServer.js",
-    "startdev": "nodemon WebhookServer.js",
-    "eslint": "eslint ./",
-    "eslint-fix": "eslint ./ --fix"
+    "start": "node src/WebhookServer.js",
+    "startdev": "nodemon src/WebhookServer.js",
+    "eslint": "eslint ./src",
+    "eslint-fix": "eslint ./src --fix"
   },
   "keywords": [],
   "author": "",
@@ -25,8 +25,6 @@
   "devDependencies": {
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.29.1",
-    "nodemon": "3.0.3",
-    "webpack": "5.89.0",
-    "webpack-cli": "5.1.4"
+    "nodemon": "3.0.3"
   }
 }
