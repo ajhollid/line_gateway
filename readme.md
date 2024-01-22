@@ -26,8 +26,10 @@ You can run this project in several ways
 
 Use the supplied Dockerfile to create a docker image running the server. Be sure to specify the LINE_TOKEN environmental variable. Optionally specify a PORT environmental variable.
 
-    `docker build -t <ImageName> .`
-    `docker run -e LINE_TOKEN=<token> <ImageName`
+```
+docker build -t <ImageName> .
+docker run -e LINE_TOKEN=<token> <ImageName
+```
 
 ---
 
