@@ -13,8 +13,6 @@ const upload = multer();
 const config = yaml.load(fs.readFileSync("config.yaml"));
 const port = config.port || 3000;
 
-console.log(config);
-
 const buildMessage = (alertname, severity, summary, description) => {
   let message = "";
 
@@ -40,7 +38,7 @@ const buildMessage = (alertname, severity, summary, description) => {
 };
 
 app.listen(port, () => {
-  console.log(`Listening for webhooks on ${port}`);
+  console.log(`Listening for alerts on ${port}`);
 });
 
 app.post("/line_hook/", upload.none(), (req, res) => {
