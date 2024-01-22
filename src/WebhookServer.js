@@ -13,12 +13,17 @@ const upload = multer();
 const config = yaml.load(fs.readFileSync("config/config.yaml"));
 const port = config.port || 3000;
 
-const buildMessage = (alertname, severity, summary, description) => {
+const buildMessage = (alertname, group, severity, summary, description) => {
   let message = "";
 
   if (alertname) {
     message += "\nAlert Name: " + alertname;
   }
+
+  if (group) {
+    message += "\nGroup: " + group;
+  }
+
   if (severity) {
     message = message + "\n" + "Severity: ";
     severityColorLookup[severity]
@@ -60,7 +65,13 @@ app.post("/line_hook/", upload.none(), (req, res) => {
   console.log(req.body);
 
   // Build message for LINE Notify
-  const message = buildMessage(alertname, severity, summary, description);
+  const message = buildMessage(
+    alertname,
+    group,
+    severity,
+    summary,
+    description
+  );
 
   // Post message to LINE Notify
   request.post(
