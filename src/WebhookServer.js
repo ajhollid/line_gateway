@@ -56,7 +56,6 @@ app.post("/notify/", upload.none(), (req, res) => {
   // Log time alert received at
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
   //Log body of request
-  console.log(JSON.stringify(req.headers.authorization));
   let token = "";
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer ")) {
