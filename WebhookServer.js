@@ -4,12 +4,16 @@ import express from "express";
 import bodyParser from "body-parser";
 import multer from "multer";
 import request from "request";
+import yaml from "js-yaml";
+import fs from "fs";
 
 const app = express();
 app.use(bodyParser.json());
 const upload = multer();
-const port = process.env.PORT || 3000;
-const token = process.env.LINE_TOKEN;
+const config = yaml.load(fs.readFileSync("config.yaml"));
+const port = config.port || 3000;
+
+console.log(config);
 
 const buildMessage = (alertname, severity, summary, description) => {
   let message = "";
@@ -39,7 +43,10 @@ app.listen(port, () => {
   console.log(`Listening for webhooks on ${port}`);
 });
 
-app.post("/line_hook", upload.none(), (req, res) => {
+app.post("/line_hook/", upload.none(), (req, res) => {
+  const group = req.query.group;
+  const b64token = config.tokens[group];
+  const token = Buffer.from(b64token, "base64").toString();
   const { alertname, severity } = req.body.commonLabels
     ? req.body.commonLabels
     : {}; // destructure labels from the request body
