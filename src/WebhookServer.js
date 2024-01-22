@@ -4,14 +4,11 @@ import express from "express";
 import bodyParser from "body-parser";
 import multer from "multer";
 import request from "request";
-import yaml from "js-yaml";
-import fs from "fs";
 
 const app = express();
 app.use(bodyParser.json());
 const upload = multer();
-const config = yaml.load(fs.readFileSync("config/config.yaml"));
-const port = config.port || 3000;
+const port = 3000;
 
 const buildMessage = (alertname, group, severity, summary, description) => {
   let message = "";
@@ -46,10 +43,8 @@ app.listen(port, () => {
   console.log(`Listening for alerts on ${port}`);
 });
 
-app.post("/line_hook/", upload.none(), (req, res) => {
+app.post("/notify/", upload.none(), (req, res) => {
   const group = req.query.group;
-  const b64token = config.tokens[group];
-  const token = Buffer.from(b64token, "base64").toString();
   const { alertname, severity } = req.body.commonLabels
     ? req.body.commonLabels
     : {}; // destructure labels from the request body
@@ -61,8 +56,13 @@ app.post("/line_hook/", upload.none(), (req, res) => {
   // Log time alert received at
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
   //Log body of request
-
-  console.log(req.body);
+  console.log(JSON.stringify(req.headers.authorization));
+  let token = "";
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.substring(7, authHeader.length);
+  }
+  // console.log(req.body);
 
   // Build message for LINE Notify
   const message = buildMessage(
