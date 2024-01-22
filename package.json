@@ -6,10 +6,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node WebhookServer.js",
-    "startdev": "nodemon WebhookServer.js",
-    "eslint": "eslint ./",
-    "eslint-fix": "eslint ./ --fix"
+    "start": "node src/WebhookServer.js",
+    "startdev": "nodemon src/WebhookServer.js",
+    "eslint": "eslint ./src",
+    "eslint-fix": "eslint ./src --fix"
   },
   "keywords": [],
   "author": "",

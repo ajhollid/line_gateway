@@ -10,7 +10,7 @@ import fs from "fs";
 const app = express();
 app.use(bodyParser.json());
 const upload = multer();
-const config = yaml.load(fs.readFileSync("config.yaml"));
+const config = yaml.load(fs.readFileSync("config/config.yaml"));
 const port = config.port || 3000;
 
 const buildMessage = (alertname, severity, summary, description) => {
