@@ -9,8 +9,7 @@
     "start": "node WebhookServer.js",
     "startdev": "nodemon WebhookServer.js",
     "eslint": "eslint ./",
-    "eslint-fix": "eslint ./ --fix",
-    "build": "webpack"
+    "eslint-fix": "eslint ./ --fix"
   },
   "keywords": [],
   "author": "",
