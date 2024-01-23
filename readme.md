@@ -8,7 +8,13 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 
 ## Getting Started
 
+---
+
+#### Ports
+
 This server listens for HTTP requests on port **8080** and HTTPS requests on **8443**
+
+---
 
 #### TLS Configuration
 
@@ -50,5 +56,30 @@ webhook_configs:
 ```
 
 ---
+
+## Adding colors for severity levels
+
+Colors for severity levels are mapped in `src/TextUtils.js`
+
+```
+const severityColorLookup = {
+  none: () => "🔵 ",
+  warning: () => "🟡 ",
+  critical: () => "🔴 ",
+  default: () => "⚪ ",
+};
+```
+
+For other severity levels, add another mapping:
+
+```
+const severityColorLookup = {
+  none: () => "🔵 ",
+  warning: () => "🟡 ",
+  critical: () => "🔴 ",
+  default: () => "⚪ ",
+  resolved: () => "🟢 "
+};
+```
 
 ![Screenshot](screenshot.png)
