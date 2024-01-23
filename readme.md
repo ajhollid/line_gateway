@@ -12,7 +12,7 @@ This server listens for HTTP requests on port **8080** and HTTPS requests on **8
 
 #### TLS Configuration
 
-If you want to use TLS then place your SSL certificate and **unencrypted** public key in the ssl folder. They should be named `cert.pem` and `key.pem` respectively.
+If you want to use TLS then place your SSL certificate and **unencrypted** key in the ssl folder. They should be named `cert.pem` and `key.pem` respectively.
 
 ---
 
