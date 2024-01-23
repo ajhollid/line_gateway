@@ -6,3 +6,4 @@ npm-debug.log
 .DS_Store
 tag_and_push.sh
 build_docker_image.sh
+*.pem

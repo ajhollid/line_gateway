@@ -1,14 +1,39 @@
 import { buildBoldLog, severityColorLookup } from "./TextUtils.js";
-import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import multer from "multer";
 import request from "request";
+import https from "https";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(bodyParser.json());
 const upload = multer();
 const port = 3000;
+
+let key;
+let cert;
+try {
+  key = fs.readFileSync(path.join(__dirname, "../ssl/key.pem"));
+
+  cert = fs.readFileSync(path.join(__dirname, "../ssl/crt.pem"));
+} catch (err) {
+  console.error(err);
+}
+
+const options = {
+  key,
+  cert,
+};
+
+https.createServer(options, app).listen(port, () => {
+  console.log(`Listening for HTTPS on port: ${port} `);
+});
 
 const buildMessage = (alertname, group, severity, summary, description) => {
   let message = "";
@@ -39,10 +64,6 @@ const buildMessage = (alertname, group, severity, summary, description) => {
   return message;
 };
 
-app.listen(port, () => {
-  console.log(`Listening for alerts on ${port}`);
-});
-
 app.post("/notify/", upload.none(), (req, res) => {
   const group = req.query.group;
   const { alertname, severity } = req.body.commonLabels
@@ -61,7 +82,7 @@ app.post("/notify/", upload.none(), (req, res) => {
   if (authHeader && authHeader.startsWith("Bearer ")) {
     token = authHeader.substring(7, authHeader.length);
   }
-  // console.log(req.body);
+  console.log(req.body);
 
   // Build message for LINE Notify
   const message = buildMessage(
