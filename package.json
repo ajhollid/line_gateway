@@ -5,11 +5,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/WebhookServer.js",
     "startdev": "nodemon src/WebhookServer.js",
     "eslint": "eslint ./src",
-    "eslint-fix": "eslint ./src --fix"
+    "eslint-fix": "eslint ./src --fix",
+    "test": "mocha ./src/tests/*.spec.js",
+    "test-text-utils": "mocha ./src/tests/textUtils.spec.js"
   },
   "keywords": [],
   "author": "",
@@ -21,8 +22,10 @@
     "request": "2.88.2"
   },
   "devDependencies": {
+    "chai": "5.0.0",
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.29.1",
+    "mocha": "10.2.0",
     "nodemon": "3.0.3"
   }
 }

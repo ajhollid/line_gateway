@@ -139,3 +139,4 @@ app.post("/notify/", upload.none(), (req, res) => {
 //   "groupKey":"{}/{team=\"line\"}:{}",
 //   "truncatedAlerts":0
 // }
+export { buildMessage };
