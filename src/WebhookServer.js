@@ -4,66 +4,55 @@ import bodyParser from "body-parser";
 import multer from "multer";
 import request from "request";
 import https from "https";
+import http from "http";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const LINE_NOTIFY_URL = "https://notify-api.line.me/api/notify";
+const PORT = 8080;
+const HTTPS_PORT = 8443;
 
 const app = express();
 app.use(bodyParser.json());
 const upload = multer();
-const port = 3000;
 
-let key;
-let cert;
 try {
-  key = fs.readFileSync(path.join(__dirname, "../ssl/key.pem"));
-
-  cert = fs.readFileSync(path.join(__dirname, "../ssl/crt.pem"));
+  const key = fs.readFileSync(path.join(__dirname, "../ssl/key.pem"));
+  const cert = fs.readFileSync(path.join(__dirname, "../ssl/crt.pem"));
+  https.createServer({ key, cert }, app).listen(HTTPS_PORT, () => {
+    console.log(buildBoldLog(`Listening for HTTPS on port: ${HTTPS_PORT} `));
+  });
 } catch (err) {
+  console.log(buildBoldLog("Something went wrong starting HTTPS server"));
   console.error(err);
 }
 
-const options = {
-  key,
-  cert,
-};
-
-https.createServer(options, app).listen(port, () => {
-  console.log(`Listening for HTTPS on port: ${port} `);
+http.createServer(app).listen(PORT, () => {
+  console.log(buildBoldLog(`Listening for HTTP on port: ${PORT}`));
 });
 
 const buildMessage = (alertname, group, severity, summary, description) => {
   let message = "";
-
-  if (alertname) {
-    message += "\nAlert Name: " + alertname;
-  }
-
-  if (group) {
-    message += "\nGroup: " + group;
-  }
-
-  if (severity) {
-    message = message + "\n" + "Severity: ";
-    severityColorLookup[severity]
+  alertname && (message += "\nAlert Name: " + alertname);
+  group && (message += "\nGroup: " + group);
+  severity && (message += "\n" + "Severity: ");
+  severity &&
+    (severityColorLookup[severity]
       ? (message += severityColorLookup[severity]())
-      : (message += severityColorLookup.default());
-    message += severity;
-  }
-
-  if (summary) {
-    message = message + "\n" + "Summary: " + summary;
-  }
-
-  if (description) {
-    message = message + "\n" + "Description: " + description;
-  }
+      : (message += severityColorLookup.default()));
+  severity && (message += severity);
+  summary && (message += "\n" + "Summary: " + summary);
+  description && (message += "\n" + "Description: " + description);
+  console.log(message);
   return message;
 };
 
+// *********************
+// POST /notify
+// *********************
 app.post("/notify/", upload.none(), (req, res) => {
   const group = req.query.group;
   const { alertname, severity } = req.body.commonLabels
@@ -74,15 +63,16 @@ app.post("/notify/", upload.none(), (req, res) => {
     : {}; // deconstruct annotations from request body
   const time = new Date();
 
-  // Log time alert received at
+  // Log time of alert and request body
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
-  //Log body of request
+  console.log(req.body);
+
+  //Extract LINE token from request headers
   let token = "";
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer ")) {
     token = authHeader.substring(7, authHeader.length);
   }
-  console.log(req.body);
 
   // Build message for LINE Notify
   const message = buildMessage(
@@ -96,7 +86,7 @@ app.post("/notify/", upload.none(), (req, res) => {
   // Post message to LINE Notify
   request.post(
     {
-      url: "https://notify-api.line.me/api/notify",
+      url: LINE_NOTIFY_URL,
       formData: { message },
       auth: {
         bearer: token,

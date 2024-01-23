@@ -8,24 +8,33 @@ This server listens for alert http POST requests from Prometheus Alert Manager, 
 
 ## Getting Started
 
-You can run this project in several ways
+This server listens for HTTP requests on port **8080** and HTTPS requests on **8443**
 
-##### Docker Image
+#### TLS Configuration
 
-Use the supplied Dockerfile to create a docker image running the server. Be sure to specify the LINE_TOKEN environmental variable. Optionally specify a PORT environmental variable.
+If you want to use TLS then place your SSL certificate and **unencrypted** public key in the ssl folder. They should be named `cert.pem` and `key.pem` respectively.
+
+---
+
+#### Running the server
+
+You can run this project in several ways:
+
+---
+
+##### 1. Docker Image
 
 ```
-docker build -t <ImageName> .
-docker run
+docker build -t <ImageTag> .
+docker run <ImageTag>
 ```
 
 ---
 
-##### Direct Install in Node Environment
+##### 2. Direct Install in Node Environment
 
-1.  Complete the configuration in `config.yaml`
-2.  Run `npm install` to install packages
-3.  Run `npm start` to start server
+1.  Run `npm install` to install packages
+2.  Run `npm start` to start server
 
 ---
 

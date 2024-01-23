@@ -6,7 +6,8 @@ const severityColorLookup = {
 };
 
 const buildBoldLog = (msg) => {
-  return "\n ***********************\n" + msg + "\n ***********************\n";
+  const str = new Array(msg.length + 1).join("*");
+  return "\n" + str + "\n" + msg + "\n" + str + "\n";
 };
 
 export { severityColorLookup, buildBoldLog };
