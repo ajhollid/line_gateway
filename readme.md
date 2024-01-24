@@ -9,10 +9,10 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 # Getting Started
 
 1. [Ports](#Ports)
-2. [Default Token Configuration](#token-config)
-3. [Request Format & Alertmanager Configuration](#request-format)
-4. [Running the Server](#running-server)
-5. [Adding colors for Severity Levels](#add-colors)
+2. [Default Token Configuration](#default-token-configurationg)
+3. [Request Format & Alertmanager Configuration](#request-format--alertmanager-configuration)
+4. [Running the Server](running-the-server)
+5. [Adding colors for Severity Levels](#adding-colors-for-severity-levels)
 
 ---
 
@@ -21,8 +21,6 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 This server listens for HTTP requests on port **8080** and HTTPS requests on **8443**
 
 ---
-
-<a name="token-config"></a>
 
 #### Default Token Configuration
 
@@ -35,8 +33,6 @@ LINE_TOKEN=<line_token>
 This default token will be used if one is not supplied in the Alertmanager request headers.
 
 ---
-
-<a name="request-format"></a>
 
 #### Request Format & Alertmanager Configuration
 
@@ -76,8 +72,6 @@ xjHyPpa8FukJU0EDJpRpP8dzT0G8uEPH13yJZbKnCMG
 ```
 
 ---
-
-<a name="running-server"></a>
 
 #### Running the server
 
