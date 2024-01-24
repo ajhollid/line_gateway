@@ -19,7 +19,7 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 
 #### Ports
 
-This server listens for HTTP requests on port **8080** and HTTPS requests on **8443**
+This server listens for HTTP requests on port **8080**
 
 ---
 
