@@ -10,10 +10,9 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 
 1. [Ports](#Ports)
 2. [Default Token Configuration](#token-config)
-3. [TLS Configuration](#tls-config)
-4. [Request Format & Alertmanager Configuration](#request-format)
-5. [Running the Server](#running-server)
-6. [Adding colors for Severity Levels](#add-colors)
+3. [Request Format & Alertmanager Configuration](#request-format)
+4. [Running the Server](#running-server)
+5. [Adding colors for Severity Levels](#add-colors)
 
 ---
 
@@ -34,14 +33,6 @@ LINE_TOKEN=<line_token>
 ```
 
 This default token will be used if one is not supplied in the Alertmanager request headers.
-
----
-
-<a name="tls-config"></a>
-
-#### TLS Configuration
-
-If you want to use TLS then place your SSL certificate and **unencrypted** key in the ssl folder. They should be named `crt.pem` and `key.pem` respectively.
 
 ---
 

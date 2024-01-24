@@ -3,34 +3,15 @@ import express from "express";
 import bodyParser from "body-parser";
 import multer from "multer";
 import request from "request";
-import https from "https";
 import http from "http";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import "dotenv/config";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const LINE_NOTIFY_URL = "https://notify-api.line.me/api/notify";
 const PORT = 8080;
-const HTTPS_PORT = 8443;
 
 const app = express();
 app.use(bodyParser.json());
 const upload = multer();
-
-try {
-  const key = fs.readFileSync(path.join(__dirname, "../ssl/key.pem"));
-  const cert = fs.readFileSync(path.join(__dirname, "../ssl/crt.pem"));
-  https.createServer({ key, cert }, app).listen(HTTPS_PORT, () => {
-    console.log(buildBoldLog(`Listening for HTTPS on port: ${HTTPS_PORT} `));
-  });
-} catch (err) {
-  console.log(buildBoldLog("Something went wrong starting HTTPS server"));
-  console.error(err);
-}
 
 http.createServer(app).listen(PORT, () => {
   console.log(buildBoldLog(`Listening for HTTP on port: ${PORT}`));
@@ -108,7 +89,7 @@ const postNotify = (req, res) => {
     );
   } else {
     console.error(buildBoldLog("No token has been supplied, request not sent"));
-    token && res.send("Error");
+    res.send("Error");
   }
 };
 
