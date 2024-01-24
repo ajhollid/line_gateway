@@ -53,7 +53,8 @@ const buildMessage = (alertname, group, severity, summary, description) => {
 // *********************
 // POST /notify
 // *********************
-app.post("/notify/", upload.none(), (req, res) => {
+
+const postNotify = (req, res) => {
   const group = req.query.group;
   const { alertname, severity } = req.body.commonLabels
     ? req.body.commonLabels
@@ -101,7 +102,13 @@ app.post("/notify/", upload.none(), (req, res) => {
       res.send("done");
     }
   );
+};
+
+app.post("/notify/", upload.none(), (req, res) => {
+  postNotify(req, res);
 });
+
+export { buildMessage };
 
 // Sample Request
 
@@ -139,4 +146,3 @@ app.post("/notify/", upload.none(), (req, res) => {
 //   "groupKey":"{}/{team=\"line\"}:{}",
 //   "truncatedAlerts":0
 // }
-export { buildMessage };
