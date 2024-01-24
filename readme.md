@@ -10,8 +10,8 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 
 1. [Ports](#Ports)
 2. [Default Token Configuration](#default-token-configurationg)
-3. [Request Format & Alertmanager Configuration](#request-format--alertmanager-configuration)
-4. [Running the Server](running-the-server)
+3. [Request Format & Alertmanager Configuration](#request-format-alertmanager-configuration)
+4. [Running the Server](#running-the-server)
 5. [Adding colors for Severity Levels](#adding-colors-for-severity-levels)
 
 ---
