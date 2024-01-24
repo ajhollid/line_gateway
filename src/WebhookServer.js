@@ -17,21 +17,6 @@ http.createServer(app).listen(PORT, () => {
   console.log(buildBoldLog(`Listening for HTTP on port: ${PORT}`));
 });
 
-const buildMessage = (alertname, group, severity, summary, description) => {
-  let message = "";
-  alertname && (message += "\nAlert Name: " + alertname);
-  group && (message += "\nGroup: " + group);
-  severity && (message += "\n" + "Severity: ");
-  severity &&
-    (severityColorLookup[severity]
-      ? (message += severityColorLookup[severity]())
-      : (message += severityColorLookup.default()));
-  severity && (message += severity);
-  summary && (message += "\n" + "Summary: " + summary);
-  description && (message += "\n" + "Description: " + description);
-  return message;
-};
-
 // *********************
 // POST /notify
 // *********************
@@ -48,6 +33,21 @@ const extractProperty = (req, property) => {
   let body = req?.body;
   if (body && body[property]) return body[property];
   return {};
+};
+
+const buildMessage = (alertname, group, severity, summary, description) => {
+  let message = "";
+  alertname && (message += "\nAlert Name: " + alertname);
+  group && (message += "\nGroup: " + group);
+  severity && (message += "\n" + "Severity: ");
+  severity &&
+    (severityColorLookup[severity]
+      ? (message += severityColorLookup[severity]())
+      : (message += severityColorLookup.default()));
+  severity && (message += severity);
+  summary && (message += "\n" + "Summary: " + summary);
+  description && (message += "\n" + "Description: " + description);
+  return message;
 };
 
 const postNotify = (req, res) => {
@@ -105,6 +105,24 @@ const postNotify = (req, res) => {
 
 app.post("/notify/", upload.none(), (req, res) => {
   postNotify(req, res);
+});
+
+// *********************
+// GET /health
+// *********************
+app.get("/health", (req, res) => {
+  const healthCheck = {
+    uptime: process.uptime(),
+    responsetime: process.hrtime(),
+    message: "OK",
+    timestamp: Date.now(),
+  };
+  try {
+    res.send(healthCheck);
+  } catch (err) {
+    healthCheck.message = err;
+    res.status(503).send;
+  }
 });
 
 export { buildMessage, extractTokenFromHeaders, extractProperty };
