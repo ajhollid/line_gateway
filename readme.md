@@ -8,17 +8,34 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 
 # Getting Started
 
-1. [Ports](#Ports)
-2. [Default Token Configuration](#default-token-configurationg)
-3. [Request Format & Alertmanager Configuration](#request-format-alertmanager-configuration)
-4. [Running the Server](#running-the-server)
-5. [Adding colors for Severity Levels](#adding-colors-for-severity-levels)
+1. [Ports](#ports)
+2. [Endpoints](#endpoints)
+3. [Default Token Configuration](#default-token-configurationg)
+4. [Request Format & Alertmanager Configuration](#request-format-alertmanager-configuration)
+5. [Running the Server](#running-the-server)
+6. [Adding colors for Severity Levels](#adding-colors-for-severity-levels)
 
 ---
 
 #### Ports
 
 This server listens for HTTP requests on port **8080** and HTTPS requests on **8443**
+
+---
+
+#### Endpoints
+
+###### POST /notify
+
+Post line requets to this endpoint
+
+###### GET /health
+
+Basic health check
+
+###### GET /metrics
+
+Prometheus metrics
 
 ---
 

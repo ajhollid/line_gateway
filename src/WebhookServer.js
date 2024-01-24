@@ -1,5 +1,6 @@
 import { buildBoldLog, severityColorLookup } from "./TextUtils.js";
 import express from "express";
+import prometheus from "express-prometheus-middleware";
 import bodyParser from "body-parser";
 import multer from "multer";
 import request from "request";
@@ -11,6 +12,15 @@ const PORT = 8080;
 
 const app = express();
 app.use(bodyParser.json());
+app.use(
+  prometheus({
+    metricsPath: "/metrics",
+    collectDefaultMetrics: true,
+    requestDurationBuckets: [0.1, 0.5, 1, 1.5],
+    requestLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
+    responseLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
+  })
+);
 const upload = multer();
 
 http.createServer(app).listen(PORT, () => {

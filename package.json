@@ -22,6 +22,7 @@
     "body-parser": "1.20.2",
     "dotenv": "16.4.0",
     "express": "4.18.2",
+    "express-prometheus-middleware": "1.2.0",
     "multer": "1.4.5-lts.1",
     "request": "2.88.2"
   },
