@@ -10,7 +10,10 @@
     "eslint": "eslint ./src",
     "eslint-fix": "eslint ./src --fix",
     "test": "mocha ./src/tests/*.spec.js",
-    "test-text-utils": "mocha ./src/tests/textUtils.spec.js"
+    "test-text-utils": "mocha ./src/tests/textUtils.spec.js",
+    "test-build-message": "mocha ./src/tests/buildMessage.spec.js",
+    "test-extract-token": "mocha ./src/tests/extractTokenFromHeaders.spec.js",
+    "test-extract-property": "mocha ./src/tests/extractProperty.spec.js"
   },
   "keywords": [],
   "author": "",

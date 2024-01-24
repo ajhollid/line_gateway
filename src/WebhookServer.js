@@ -36,14 +36,26 @@ const buildMessage = (alertname, group, severity, summary, description) => {
 // POST /notify
 // *********************
 
+const extractTokenFromHeaders = (req) => {
+  let authHeader = req?.headers?.authorization;
+  if (typeof authHeader == "string" && authHeader.startsWith("Bearer ")) {
+    return authHeader.substring(7, authHeader.length);
+  }
+  return "";
+};
+
+const extractProperty = (req, property) => {
+  let body = req?.body;
+  if (body && body[property]) return body[property];
+  return {};
+};
+
 const postNotify = (req, res) => {
   const group = req.query.group;
-  const { alertname, severity } = req.body.commonLabels
-    ? req.body.commonLabels
-    : {}; // destructure labels from the request body
-  const { summary, description } = req.body.commonAnnotations
-    ? req.body.commonAnnotations
-    : {}; // deconstruct annotations from request body
+
+  //Extract properties from request
+  const { alertname, severity } = extractProperty(req, "commonLabels");
+  const { summary, description } = extractProperty(req, "commonAnnotations");
   const time = new Date();
 
   // Log time of alert and request body
@@ -51,14 +63,10 @@ const postNotify = (req, res) => {
   console.log(req.body);
 
   //Extract LINE token from request headers
-  let token = "";
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.substring(7, authHeader.length);
-  } else {
-    //Load a default token from environtmental variables if one is not present in headers
-    token = process.env.LINE_TOKEN;
-  }
+  let token = extractTokenFromHeaders(req);
+
+  //Load a default token from environtmental variables if one is not present in headers
+  if (!token) token = process.env.LINE_TOKEN;
 
   // Post message to LINE Notify if a token has been supplied
   if (token) {
@@ -70,6 +78,7 @@ const postNotify = (req, res) => {
       summary,
       description
     );
+
     request.post(
       {
         url: LINE_NOTIFY_URL,
@@ -88,6 +97,7 @@ const postNotify = (req, res) => {
       }
     );
   } else {
+    // Otherwise log error
     console.error(buildBoldLog("No token has been supplied, request not sent"));
     res.send("Error");
   }
@@ -97,7 +107,7 @@ app.post("/notify/", upload.none(), (req, res) => {
   postNotify(req, res);
 });
 
-export { buildMessage };
+export { buildMessage, extractTokenFromHeaders, extractProperty };
 
 // Sample Request
 
