@@ -8,6 +8,8 @@ import http from "http";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import "dotenv/config";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -46,7 +48,6 @@ const buildMessage = (alertname, group, severity, summary, description) => {
   severity && (message += severity);
   summary && (message += "\n" + "Summary: " + summary);
   description && (message += "\n" + "Description: " + description);
-  console.log(message);
   return message;
 };
 
@@ -66,42 +67,49 @@ const postNotify = (req, res) => {
 
   // Log time of alert and request body
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
-  console.log(req.body);
+  console.log(req.headers);
 
   //Extract LINE token from request headers
   let token = "";
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer ")) {
     token = authHeader.substring(7, authHeader.length);
+  } else {
+    //Load a default token from environtmental variables if one is not present in headers
+    token = process.env.LINE_TOKEN;
   }
 
-  // Build message for LINE Notify
-  const message = buildMessage(
-    alertname,
-    group,
-    severity,
-    summary,
-    description
-  );
-
-  // Post message to LINE Notify
-  request.post(
-    {
-      url: LINE_NOTIFY_URL,
-      formData: { message },
-      auth: {
-        bearer: token,
+  // Post message to LINE Notify if a token has been supplied
+  if (token) {
+    // Build message for LINE Notify
+    const message = buildMessage(
+      alertname,
+      group,
+      severity,
+      summary,
+      description
+    );
+    request.post(
+      {
+        url: LINE_NOTIFY_URL,
+        formData: { message },
+        auth: {
+          bearer: token,
+        },
       },
-    },
-    (err, httpResponse, body) => {
-      if (err) {
-        console.log(err);
-        res.send(err);
+      (err, httpResponse, body) => {
+        if (err) {
+          console.log(err);
+          res.send(err);
+        }
+        console.log("Forward Success, server responded with: ", body);
+        res.send("done");
       }
-      console.log("Forward Success, server responded with: ", body);
-      res.send("done");
-    }
-  );
+    );
+  } else {
+    console.error(buildBoldLog("No token has been supplied, request not sent"));
+    token && res.send("Error");
+  }
 };
 
 app.post("/notify/", upload.none(), (req, res) => {
