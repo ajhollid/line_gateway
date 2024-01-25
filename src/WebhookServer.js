@@ -120,12 +120,19 @@ app.post("/notify/", upload.none(), (req, res) => {
 // *********************
 // GET /health
 // *********************
+
 app.get("/health", (req, res) => {
+  let uptime = new Date(Math.floor(process.uptime()) * 1000)
+    .toISOString()
+    .substring(11, 19);
+  uptime = uptime.substring(0, 2) + "h" + uptime.substring(2);
+  uptime = uptime.substring(0, 6) + "m" + uptime.substring(6);
+  uptime = uptime.substring(0, 12) + "s" + uptime.substring(12);
+
   const healthCheck = {
-    uptime: process.uptime(),
-    responsetime: process.hrtime(),
+    uptime,
     message: "OK",
-    timestamp: Date.now(),
+    timestamp: new Date(Date.now()).toLocaleString(),
   };
   try {
     res.send(healthCheck);
