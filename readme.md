@@ -46,10 +46,11 @@ Post alert requets to this endpoint
 
 ###### Method/Headers
 
-| Request methods/headers | value            |
-| ----------------------- | ---------------- |
-| Method                  | POST             |
-| content-type            | application/json |
+| Request methods/headers | value               |
+| ----------------------- | ------------------- |
+| Method                  | POST                |
+| authorization           | Bearer <LINE_token> |
+| content-type            | application/json    |
 
 ###### Body
 
