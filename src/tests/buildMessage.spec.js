@@ -33,7 +33,7 @@ describe("buildMessage()", () => {
   describe("Build message with severity level only", () => {
     it("Should return a message with severity level", () => {
       expect(buildMessage(undefined, undefined, severity)).to.equal(
-        "\nSeverity: " + severityColorLookup[severity]() + severity
+        "\nSeverity: " + severityColorLookup[severity]() + ` ${severity}`
       );
     });
   });
@@ -44,7 +44,7 @@ describe("buildMessage()", () => {
         ? severityColorLookup[unknownSeverity]()
         : severityColorLookup.default();
       expect(buildMessage(undefined, undefined, unknownSeverity)).to.equal(
-        "\nSeverity: " + severityEmoji + unknownSeverity
+        "\nSeverity: " + severityEmoji + ` ${unknownSeverity}`
       );
     });
   });
@@ -70,6 +70,29 @@ describe("buildMessage()", () => {
       expect(
         buildMessage(undefined, undefined, undefined, undefined, undefined)
       ).to.equal("");
+    });
+  });
+
+  describe("Build message with all fields", () => {
+    it("Should return a properly built message", () => {
+      expect(
+        buildMessage(alertname, group, severity, summary, description)
+      ).to.equal(
+        "\nAlert Name: " +
+          alertname +
+          "\nGroup: " +
+          group +
+          "\n" +
+          "Severity: " +
+          severityColorLookup[severity]() +
+          ` ${severity}` +
+          "\n" +
+          "Summary: " +
+          summary +
+          "\n" +
+          "Description: " +
+          description
+      );
     });
   });
 });

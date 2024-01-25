@@ -1,8 +1,8 @@
 const severityColorLookup = {
-  none: () => "🔵 ",
-  warning: () => "🟡 ",
-  critical: () => "🔴 ",
-  default: () => "⚪ ",
+  none: () => "🔵",
+  warning: () => "🟡",
+  critical: () => "🔴",
+  default: () => "⚪",
 };
 
 const buildBoldLog = (msg) => {

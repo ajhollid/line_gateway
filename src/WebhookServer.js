@@ -3,7 +3,6 @@ import express from "express";
 import prometheus from "express-prometheus-middleware";
 import bodyParser from "body-parser";
 import multer from "multer";
-import request from "request";
 import axios from "axios";
 import http from "http";
 import "dotenv/config";
@@ -55,7 +54,7 @@ const buildMessage = (alertname, group, severity, summary, description) => {
     (severityColorLookup[severity]
       ? (message += severityColorLookup[severity]())
       : (message += severityColorLookup.default()));
-  severity && (message += severity);
+  severity && (message += ` ${severity}`);
   summary && (message += "\n" + "Summary: " + summary);
   description && (message += "\n" + "Description: " + description);
   return message;

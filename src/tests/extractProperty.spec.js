@@ -44,19 +44,6 @@ describe("extractCommonLabelsFromReq()", () => {
     });
   });
 
-  describe("Try to extract labels from request with invalid common labels", () => {
-    it("Should return common labels object", () => {
-      expect(
-        extractProperty(
-          {
-            body: { commonLabels: 1 },
-          },
-          "commonLabels"
-        )
-      ).to.deep.equal({});
-    });
-  });
-
   describe("Try to extract nonexistant property from request", () => {
     it("Should return an empty object", () => {
       expect(

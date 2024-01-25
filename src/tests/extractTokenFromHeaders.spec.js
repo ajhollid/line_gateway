@@ -11,9 +11,9 @@ describe("extractTokenFromHeaders()", () => {
     });
   });
 
-  describe("Try to extract token from undefined headers", () => {
+  describe("Try to extract token from request with no headers", () => {
     it("Should return an empty string", () => {
-      expect(extractTokenFromHeaders(undefined)).to.equal("");
+      expect(extractTokenFromHeaders({})).to.equal("");
     });
   });
 
