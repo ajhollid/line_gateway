@@ -5,10 +5,19 @@ import bodyParser from "body-parser";
 import multer from "multer";
 import axios from "axios";
 import http from "http";
+import https from "https";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import "dotenv/config";
 
 const REQUEST_URL = process.env.REQUEST_URL;
+const ENABLE_TLS = process.env.ENABLE_TLS;
+const HTTPS_PORT = 8443;
 const PORT = 8080;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(bodyParser.json());
@@ -23,9 +32,25 @@ app.use(
 );
 const upload = multer();
 
-http.createServer(app).listen(PORT, () => {
-  console.log(buildBoldLog(`Listening for HTTP on port: ${PORT}`));
-});
+// If SSL has been enabled, start the HTTPS server
+if (ENABLE_TLS) {
+  try {
+    const key = fs.readFileSync(path.join(__dirname, "../ssl/key.pem"));
+    const cert = fs.readFileSync(path.join(__dirname, "../ssl/crt.pem"));
+    https.createServer({ key, cert }, app).listen(HTTPS_PORT, () => {
+      console.log(buildBoldLog(`Listening for HTTPS on port: ${HTTPS_PORT} `));
+    });
+  } catch (err) {
+    console.log(buildBoldLog("Something went wrong starting HTTPS server"));
+    console.error(err);
+  }
+}
+
+// If it hasn't been enabled, start the HTTP server
+!ENABLE_TLS &&
+  http.createServer(app).listen(PORT, () => {
+    console.log(buildBoldLog(`Listening for HTTP on port: ${PORT}`));
+  });
 
 // *********************
 // POST /notify

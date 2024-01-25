@@ -22,23 +22,19 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 
 Configure the LINE Gateway with the following environmental variables:
 
-###### 1. Required Enviromental Variables:
-
-- **REQUEST_URL**
-  URL that the Gateway will forward requests to
-  `REQUEST_URL=<request_url>`
-
-###### 2. Optional Environmental Variables:
-
-- **DEFAULT_LINE_TOKEN**
-  A default token that will be used if one is not specified in the [Alertmanager Configuration](#alertmanager-configuration)
-  `DEFAULT_LINE_TOKEN=<token>`
+| ENV Variable Name  | Required/Optional | Type    | Description                                                                                                              |
+| ------------------ | ----------------- | ------- | ------------------------------------------------------------------------------------------------------------------------ |
+| REQUEST_URL        | Rrequired         | string  | URL to forward requests to                                                                                               |
+| DEFAULT_LINE_TOKEN | Optional          | string  | Default token that will be used if one is not specified in the [Alertmanager Configuration](#alertmanager-configuration) |
+| ENABLE_TLS         | Optional          | boolean | Enables HTTPS server                                                                                                     |
 
 ---
 
 ## Ports
 
-This server listens for HTTP requests on port **8080**
+This server listens for HTTP requests on port **8080**.
+
+If TLS is enabled the server listens for HTTPS requests on **8443**
 
 ---
 
