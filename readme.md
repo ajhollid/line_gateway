@@ -24,7 +24,7 @@ Configure the LINE Gateway with the following environmental variables:
 
 | ENV Variable Name  | Required/Optional | Type    | Description                                                                                                              |
 | ------------------ | ----------------- | ------- | ------------------------------------------------------------------------------------------------------------------------ |
-| REQUEST_URL        | Rrequired         | string  | URL to forward requests to                                                                                               |
+| REQUEST_URL        | Required          | string  | URL to forward requests to                                                                                               |
 | DEFAULT_LINE_TOKEN | Optional          | string  | Default token that will be used if one is not specified in the [Alertmanager Configuration](#alertmanager-configuration) |
 | ENABLE_TLS         | Optional          | boolean | Enables HTTPS server                                                                                                     |
 
