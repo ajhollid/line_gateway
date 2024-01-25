@@ -40,9 +40,26 @@ If TLS is enabled the server listens for HTTPS requests on **8443**
 
 ## Endpoints
 
-###### POST /notify
+##### POST /notify
 
-Post line requets to this endpoint
+Post alert requets to this endpoint
+
+###### Method/Headers
+
+| Request methods/headers | value            |
+| ----------------------- | ---------------- |
+| Method                  | POST             |
+| content-type            | application/json |
+
+###### Body
+
+| Name              | Type            | Description       |
+| ----------------- | --------------- | ----------------- |
+| status            | string          | Status of alert   |
+| commonLabels      | Key Value pairs | alert labels      |
+| commonAnnotations | Key Value pairs | alert annotations |
+
+For further details see [Alertmanager Documentation](https://prometheus.io/docs/alerting/latest/notifications/)
 
 ###### GET /health
 
