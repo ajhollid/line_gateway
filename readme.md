@@ -8,13 +8,30 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 
 # Getting Started
 
-1. [Ports](#ports)
-2. [Endpoints](#endpoints)
-3. [Default Token Configuration](#default-token-configuration)
-4. [Request Format](#request-format)
-5. [Alertmanager Configuration](#alertmanager-configuration)
-6. [Running the Server](#running-the-server)
-7. [Adding colors for Severity Levels](#adding-colors-for-severity-levels)
+1. [Gateway Configuration](#gateway-configuration)
+2. [Ports](#ports)
+3. [Endpoints](#endpoints)
+4. [Default Token Configuration](#default-token-configuration)
+5. [Request Format](#request-format)
+6. [Alertmanager Configuration](#alertmanager-configuration)
+7. [Running the Server](#running-the-server)
+8. [Adding colors for Severity Levels](#adding-colors-for-severity-levels)
+
+---
+
+#### Gateway Configuration
+
+Specify request URL with an environmental variable
+
+```
+REQUEST_URL=<request_url_here>
+```
+
+For example, to directly call LINE notify API
+
+```
+REQUEST_URL=https://notify-api.line.me/api/notify
+```
 
 ---
 

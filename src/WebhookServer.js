@@ -7,7 +7,7 @@ import axios from "axios";
 import http from "http";
 import "dotenv/config";
 
-const LINE_NOTIFY_URL = "https://notify-api.line.me/api/notify";
+const REQUEST_URL = process.env.REQUEST_URL;
 const PORT = 8080;
 
 const app = express();
@@ -92,7 +92,7 @@ const postNotify = (req, res) => {
     form.append("message", message);
 
     axios
-      .post(LINE_NOTIFY_URL, form, config)
+      .post(REQUEST_URL, form, config)
       .then((result) => {
         console.log(result.data);
         res.send(result.data);
