@@ -61,11 +61,11 @@ Post alert requets to this endpoint
 
 For further details see [Alertmanager Documentation](https://prometheus.io/docs/alerting/latest/notifications/)
 
-###### GET /health
+##### GET /health
 
 Basic health check
 
-###### GET /metrics
+##### GET /metrics
 
 Prometheus metrics
 
