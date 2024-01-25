@@ -56,8 +56,8 @@ Post alert requets to this endpoint
 | Name              | Type            | Description       |
 | ----------------- | --------------- | ----------------- |
 | status            | string          | Status of alert   |
-| commonLabels      | Key Value pairs | alert labels      |
-| commonAnnotations | Key Value pairs | alert annotations |
+| commonLabels      | Key Value pairs | Alert labels      |
+| commonAnnotations | Key Value pairs | Alert annotations |
 
 For further details see [Alertmanager Documentation](https://prometheus.io/docs/alerting/latest/notifications/)
 
