@@ -45,9 +45,17 @@ const extractProperty = (req, property) => {
   return {};
 };
 
-const buildMessage = (alertname, group, severity, summary, description) => {
+const buildMessage = (
+  alertname,
+  status,
+  group,
+  severity,
+  summary,
+  description
+) => {
   let message = "";
   alertname && (message += "\nAlert Name: " + alertname);
+  status && (message += "\nStatus: " + status);
   group && (message += "\nGroup: " + group);
   severity && (message += "\n" + "Severity: ");
   severity &&
@@ -64,23 +72,31 @@ const postNotify = (req, res) => {
   const group = req.query.group;
 
   //Extract properties from request
+  const status = extractProperty(req, "status");
   const { alertname, severity } = extractProperty(req, "commonLabels");
   const { summary, description } = extractProperty(req, "commonAnnotations");
   const time = new Date();
 
   // Log time of alert and request body
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
-  // console.log(req.body);
+  console.log(req.body);
 
   //Extract LINE token from request headers
   let token = extractTokenFromHeaders(req);
   //  Load a default token from environtmental variables if one is not present in headers
-  if (!token) token = process.env.LINE_TOKEN;
+  if (!token) token = process.env.DEFAULT_LINE_TOKEN;
 
   // Build message for LINE Notify if we have a token
   let message = "";
   if (token)
-    message = buildMessage(alertname, group, severity, summary, description);
+    message = buildMessage(
+      alertname,
+      status,
+      group,
+      severity,
+      summary,
+      description
+    );
 
   // Post message to LINE Notify if a token and message has been supplied
   if (token && message) {
