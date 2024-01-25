@@ -4,6 +4,7 @@ import prometheus from "express-prometheus-middleware";
 import bodyParser from "body-parser";
 import multer from "multer";
 import request from "request";
+import axios from "axios";
 import http from "http";
 import "dotenv/config";
 
@@ -70,45 +71,48 @@ const postNotify = (req, res) => {
 
   // Log time of alert and request body
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
-  console.log(req.body);
+  // console.log(req.body);
 
   //Extract LINE token from request headers
   let token = extractTokenFromHeaders(req);
-
-  //Load a default token from environtmental variables if one is not present in headers
+  //  Load a default token from environtmental variables if one is not present in headers
   if (!token) token = process.env.LINE_TOKEN;
 
-  // Post message to LINE Notify if a token has been supplied
-  if (token) {
-    // Build message for LINE Notify
-    const message = buildMessage(
-      alertname,
-      group,
-      severity,
-      summary,
-      description
-    );
+  // Build message for LINE Notify if we have a token
+  let message = "";
+  if (token)
+    message = buildMessage(alertname, group, severity, summary, description);
 
-    request.post(
-      {
-        url: LINE_NOTIFY_URL,
-        formData: { message },
-        auth: {
-          bearer: token,
-        },
-      },
-      (err, httpResponse, body) => {
-        if (err) {
-          console.log(err);
-          res.send(err);
-        }
-        console.log("Forward Success, server responded with: ", body);
-        res.send("done");
-      }
-    );
+  // Post message to LINE Notify if a token and message has been supplied
+  if (token && message) {
+    const config = {
+      headers: { Authorization: "Bearer " + token },
+    };
+
+    const form = new FormData();
+    form.append("message", message);
+
+    axios
+      .post(LINE_NOTIFY_URL, form, config)
+      .then((result) => {
+        console.log(result.data);
+        res.send(result.data);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        res.send(err.response.data);
+      });
   } else {
     // Otherwise log error
-    console.error(buildBoldLog("No token has been supplied, request not sent"));
+    !token &&
+      console.error(
+        buildBoldLog("No token has been supplied, request not sent")
+      );
+
+    !message &&
+      console.error(
+        buildBoldLog("No message has been supplied, request not sent")
+      );
     res.send("Error");
   }
 };
