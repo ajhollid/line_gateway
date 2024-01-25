@@ -99,16 +99,12 @@ xjHyPpa8FukJU0EDJpRpP8dzT0G8uEPH13yJZbKnCMG
 
 You can run this project in several ways:
 
----
-
 ##### 1. Docker Image
 
 ```
 docker build -t <ImageTag> .
 docker run <ImageTag>
 ```
-
----
 
 ##### 2. Direct Install in Node Environment
 
