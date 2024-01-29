@@ -68,6 +68,8 @@ For further details see [Alertmanager Documentation](https://prometheus.io/docs/
 
 ##### GET /health
 
+###### Response
+
 | Status Code | Type        | Description        |
 | ----------- | ----------- | ------------------ |
 | 200         | HealthCheck | Basic Health Check |
