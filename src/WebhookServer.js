@@ -104,7 +104,6 @@ const postNotify = (req, res) => {
 
   // Log time of alert and request body
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
-  console.log(req.headers);
   console.log(req.body);
 
   //Extract LINE token from request headers
