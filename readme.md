@@ -40,7 +40,7 @@ If TLS is enabled the server listens for HTTPS requests on **8443**
 
 ## TLS Configuration
 
-The server expects an SSL certificate named `crt.pem` and an **unencrypted** private key named `key.pem`. Place these two files in the ssl folder prior to building the docker image or running the server in a Node environment.
+The server expects an SSL certificate named `crt.pem` and an **unencrypted** private key named `key.pem`. Place these two files in the `ssl` folder prior to building the docker image or running the server in a Node environment.
 
 ## Endpoints
 
