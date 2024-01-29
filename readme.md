@@ -10,11 +10,12 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 
 1. [Gateway Configuration](#gateway-configuration)
 2. [Ports](#ports)
-3. [Endpoints](#endpoints)
-4. [Request Format](#request-format)
-5. [Alertmanager Configuration](#alertmanager-configuration)
-6. [Running the Server](#running-the-server)
-7. [Adding colors for Severity Levels](#adding-colors-for-severity-levels)
+3. [TLS Configuration](#tls-configuration)
+4. [Endpoints](#endpoints)
+5. [Request Format](#request-format)
+6. [Alertmanager Configuration](#alertmanager-configuration)
+7. [Running the Server](#running-the-server)
+8. [Adding colors for Severity Levels](#adding-colors-for-severity-levels)
 
 ---
 
@@ -37,6 +38,10 @@ This server listens for HTTP requests on port **8080**.
 If TLS is enabled the server listens for HTTPS requests on **8443**
 
 ---
+
+## TLS Configuration
+
+The server expects an SSL certificate named `crt.pem` and an **unencrypted** private key named `key.pem`. Place these two files in the ssl folder prior to building the docker image or running the server in a Node environment.
 
 ## Endpoints
 
