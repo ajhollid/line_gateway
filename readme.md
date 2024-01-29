@@ -68,7 +68,17 @@ For further details see [Alertmanager Documentation](https://prometheus.io/docs/
 
 ##### GET /health
 
-Basic health check
+| Status Code | Type        | Description        |
+| ----------- | ----------- | ------------------ |
+| 200         | HealthCheck | Basic Health Check |
+
+###### HealthCheck
+
+| Name      | Type   | Notes                        |
+| --------- | ------ | ---------------------------- |
+| uptime    | string | Time server has been running |
+| message   | string | Response message             |
+| timestamp | string | Time of health check         |
 
 ##### GET /metrics
 
