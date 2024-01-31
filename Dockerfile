@@ -4,5 +4,4 @@ COPY src src
 COPY ssl ssl
 ENV npm_config_cache /tmp/npm
 RUN npm install
-EXPOSE 33333
 CMD ["npm", "start"]
