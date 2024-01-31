@@ -4,30 +4,24 @@ import { extractProperty } from "../WebhookServer.js";
 let expect = chai.expect;
 
 describe("extractCommonLabelsFromReq()", () => {
-  describe("Try to extract labels from undefined request", () => {
+  describe("Try to extract labels from undefined body", () => {
     it("Should return an empty object", () => {
-      expect(extractProperty(undefined), "commonLabels").to.deep.equal({});
-    });
-  });
-
-  describe("Try to extract labels from request with no body", () => {
-    it("Should return an empty object", () => {
-      expect(extractProperty({}), "commonLabels").to.deep.equal({});
+      expect(extractProperty(undefined), "commonLabels").to.equal("");
     });
   });
 
   describe("Try to extract labels from request with empty body", () => {
     it("Should return an empty object", () => {
-      expect(extractProperty({ body: {} })).to.deep.equal({}, "commonLabels");
+      expect(extractProperty({}), "commonLabels").to.deep.equal("");
     });
   });
 
   describe("Try to extract labels from request with no common labels", () => {
     it("Should return an empty object", () => {
       expect(
-        extractProperty({ body: { commonLabels: {} } }),
+        extractProperty({ commonLabels: {} }),
         "commonLabels"
-      ).to.deep.equal({});
+      ).to.deep.equal("");
     });
   });
 
@@ -35,9 +29,7 @@ describe("extractCommonLabelsFromReq()", () => {
     it("Should return common labels object", () => {
       expect(
         extractProperty(
-          {
-            body: { commonLabels: { label1: "test", label2: "test2" } },
-          },
+          { commonLabels: { label1: "test", label2: "test2" } },
           "commonLabels"
         )
       ).to.deep.equal({ label1: "test", label2: "test2" });
@@ -48,12 +40,11 @@ describe("extractCommonLabelsFromReq()", () => {
     it("Should return an empty object", () => {
       expect(
         extractProperty(
-          {
-            body: { commonLabels: { label1: "test", label2: "test2" } },
-          },
+          { commonLabels: { label1: "test", label2: "test2" } },
+
           "nonexistantProperty"
         )
-      ).to.deep.equal({});
+      ).to.deep.equal("");
     });
   });
 });

@@ -64,10 +64,9 @@ const extractTokenFromHeaders = (req) => {
   return "";
 };
 
-const extractProperty = (req, property) => {
-  let body = req?.body;
-  if (body && body[property]) return body[property];
-  return {};
+const extractProperty = (obj, property) => {
+  if (obj && obj[property]) return obj[property];
+  return "";
 };
 
 const buildMessage = (
@@ -98,8 +97,11 @@ const postNotify = (req, res) => {
 
   //Extract properties from request
   const status = extractProperty(req, "status");
-  const { alertname, severity } = extractProperty(req, "commonLabels");
-  const { summary, description } = extractProperty(req, "commonAnnotations");
+  const { alertname, severity } = extractProperty(req.body, "commonLabels");
+  const { summary, description } = extractProperty(
+    req.body,
+    "commonAnnotations"
+  );
   const time = new Date();
 
   // Log time of alert and request body
