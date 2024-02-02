@@ -41,7 +41,7 @@ app.use(
 const upload = multer();
 
 // If SSL has been enabled, start the HTTPS server
-if (ENABLE_TLS) {
+if (ENABLE_TLS === "true") {
   try {
     const key = fs.readFileSync(path.join(__dirname, "../ssl/key.pem"));
     const cert = fs.readFileSync(path.join(__dirname, "../ssl/crt.pem"));
@@ -55,7 +55,7 @@ if (ENABLE_TLS) {
 }
 
 // If it hasn't been enabled, start the HTTP server
-!ENABLE_TLS &&
+ENABLE_TLS === "false" &&
   http.createServer(app).listen(PORT, () => {
     console.log(buildBoldLog(`Listening for HTTP on port: ${PORT}`));
   });
