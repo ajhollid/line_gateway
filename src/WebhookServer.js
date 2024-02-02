@@ -21,6 +21,7 @@ const PORT = 8080;
 let PROXY_AGENT;
 if (process.env.PROXY_URL) {
   PROXY_AGENT = new HttpsProxyAgent(process.env.PROXY_URL);
+  console.log(buildBoldLog("Proxy: " + process.env.PROXY_URL));
 }
 
 const __filename = fileURLToPath(import.meta.url);
