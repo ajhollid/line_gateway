@@ -3,18 +3,20 @@ import express from "express";
 import prometheus from "express-prometheus-middleware";
 import bodyParser from "body-parser";
 import multer from "multer";
-import axios from "axios";
 import http from "http";
 import https from "https";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import "dotenv/config";
+import fetch from "node-fetch";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 const REQUEST_URL = process.env.REQUEST_URL;
 const ENABLE_TLS = process.env.ENABLE_TLS;
 const HTTPS_PORT = 8443;
 const PORT = 8080;
+const PROXY_AGENT = new HttpsProxyAgent(process.env.PROXY_URL);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -106,7 +108,7 @@ const postNotify = (req, res) => {
 
   // Log time of alert and request body
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
-  console.log(req.body);
+  // console.log(req.body);
 
   //Extract LINE token from request headers
   let token = extractTokenFromHeaders(req);
@@ -127,22 +129,27 @@ const postNotify = (req, res) => {
 
   // Post message to LINE Notify if a token and message has been supplied
   if (token && message) {
-    const config = {
-      headers: { Authorization: "Bearer " + token },
-    };
-
     const form = new FormData();
     form.append("message", message);
 
-    axios
-      .post(REQUEST_URL, form, config)
-      .then((result) => {
-        console.log(result.data);
-        res.send(result.data);
+    const config = {
+      method: "POST",
+      body: form,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+      agent: PROXY_AGENT,
+    };
+
+    fetch(REQUEST_URL, config)
+      .then((response) => response.text())
+      .then((body) => {
+        console.log(buildBoldLog("Success: " + body));
+        res.send(body);
       })
       .catch((err) => {
-        console.log(err.response.data);
-        res.send(err.response.data);
+        console.error(buildBoldLog("Error: " + err.message));
+        res.send(err.message);
       });
   } else {
     // Otherwise log error
