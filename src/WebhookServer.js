@@ -16,7 +16,12 @@ const REQUEST_URL = process.env.REQUEST_URL;
 const ENABLE_TLS = process.env.ENABLE_TLS;
 const HTTPS_PORT = 8443;
 const PORT = 8080;
-const PROXY_AGENT = new HttpsProxyAgent(process.env.PROXY_URL);
+
+//Configure proxy agent if it is specified
+let PROXY_AGENT;
+if (process.env.PROXY_URL) {
+  PROXY_AGENT = new HttpsProxyAgent(process.env.PROXY_URL);
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -138,8 +143,11 @@ const postNotify = (req, res) => {
       headers: {
         Authorization: "Bearer " + token,
       },
-      agent: PROXY_AGENT,
     };
+
+    if (PROXY_AGENT) {
+      config.agent = PROXY_AGENT;
+    }
 
     fetch(REQUEST_URL, config)
       .then((response) => response.text())
