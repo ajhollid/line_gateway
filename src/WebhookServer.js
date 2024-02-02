@@ -55,7 +55,7 @@ if (ENABLE_TLS === "true") {
 }
 
 // If it hasn't been enabled, start the HTTP server
-ENABLE_TLS === "false" &&
+ENABLE_TLS !== "true" &&
   http.createServer(app).listen(PORT, () => {
     console.log(buildBoldLog(`Listening for HTTP on port: ${PORT}`));
   });
