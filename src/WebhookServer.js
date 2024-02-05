@@ -11,9 +11,10 @@ import { fileURLToPath } from "url";
 import "dotenv/config";
 import fetch from "node-fetch";
 import { HttpsProxyAgent } from "https-proxy-agent";
+import yn from "yn";
 
 const REQUEST_URL = process.env.REQUEST_URL;
-const ENABLE_TLS = process.env.ENABLE_TLS;
+const ENABLE_TLS = yn(process.env.ENABLE_TLS);
 const HTTPS_PORT = 8443;
 const PORT = 8080;
 
@@ -41,7 +42,7 @@ app.use(
 const upload = multer();
 
 // If SSL has been enabled, start the HTTPS server
-if (ENABLE_TLS === "true") {
+if (ENABLE_TLS) {
   try {
     const key = fs.readFileSync(path.join(__dirname, "../ssl/key.pem"));
     const cert = fs.readFileSync(path.join(__dirname, "../ssl/crt.pem"));
@@ -55,7 +56,7 @@ if (ENABLE_TLS === "true") {
 }
 
 // If it hasn't been enabled, start the HTTP server
-ENABLE_TLS !== "true" &&
+!ENABLE_TLS &&
   http.createServer(app).listen(PORT, () => {
     console.log(buildBoldLog(`Listening for HTTP on port: ${PORT}`));
   });
@@ -114,7 +115,7 @@ const postNotify = (req, res) => {
 
   // Log time of alert and request body
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
-  // console.log(req.body);
+  console.log(JSON.stringify(req.body));
 
   //Extract LINE token from request headers
   let token = extractTokenFromHeaders(req);
