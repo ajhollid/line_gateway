@@ -109,6 +109,8 @@ const postNotify = (req, res) => {
   //Extract properties from request
   const alerts = extractProperty(req.body, "alerts");
 
+  const alerts = extractProperty(req.body, "alerts");
+
   const time = new Date();
 
   // Log time of alert and request body
