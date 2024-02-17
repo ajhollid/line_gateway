@@ -78,39 +78,36 @@ const extractProperty = (obj, property) => {
   return "";
 };
 
-const buildMessage = (
-  alertname,
-  status,
-  group,
-  severity,
-  summary,
-  description
-) => {
+const buildMessage = (alerts) => {
   let message = "";
-  alertname && (message += "\nAlert Name: " + alertname);
-  status && (message += "\nStatus: " + status);
-  group && (message += "\nGroup: " + group);
-  severity && (message += "\n" + "Severity: ");
-  severity &&
-    (severityColorLookup[severity]
-      ? (message += severityColorLookup[severity]())
-      : (message += severityColorLookup.default()));
-  severity && (message += ` ${severity}`);
-  summary && (message += "\n" + "Summary: " + summary);
-  description && (message += "\n" + "Description: " + description);
+  for (let i = 0; i < alerts.length; i++) {
+    let alert = alerts[i];
+    let status = extractProperty(alert, "status");
+    let labels = extractProperty(alert, "labels");
+    let annotations = extractProperty(alert, "annotations");
+    let alertname = extractProperty(labels, "alertname");
+    let severity = extractProperty(labels, "severity");
+    let summary = extractProperty(annotations, "summary");
+    let description = extractProperty(annotations, "description");
+    alertname && (message += "\nAlert Name: " + alertname);
+    status && (message += "\nStatus: " + status);
+    severity && (message += "\n" + "Severity: ");
+    severity &&
+      (severityColorLookup[severity]
+        ? (message += severityColorLookup[severity]())
+        : (message += severityColorLookup.default()));
+    severity && (message += ` ${severity}`);
+    summary && (message += "\n" + "Summary: " + summary);
+    description && (message += "\n" + "Description: " + description);
+    if (i < alerts.length - 1) message += "\n\n";
+  }
   return message;
 };
 
 const postNotify = (req, res) => {
-  const group = req.query.group;
-
   //Extract properties from request
-  const status = extractProperty(req, "status");
-  const { alertname, severity } = extractProperty(req.body, "commonLabels");
-  const { summary, description } = extractProperty(
-    req.body,
-    "commonAnnotations"
-  );
+  const alerts = extractProperty(req.body, "alerts");
+
   const time = new Date();
 
   // Log time of alert and request body
@@ -124,15 +121,7 @@ const postNotify = (req, res) => {
 
   // Build message for LINE Notify if we have a token
   let message = "";
-  if (token)
-    message = buildMessage(
-      alertname,
-      status,
-      group,
-      severity,
-      summary,
-      description
-    );
+  if (token) message = buildMessage(alerts);
 
   // Post message to LINE Notify if a token and message has been supplied
   if (token && message) {
