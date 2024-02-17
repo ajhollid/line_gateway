@@ -27,8 +27,7 @@ Configure the LINE Gateway with the following environmental variables:
 | REQUEST_URL                  | Required          | string  | URL to forward requests to                                                                                               |
 | PROXY_URL                    | Optional          | string  | Proxy server address                                                                                                     |
 | DEFAULT_LINE_TOKEN           | Optional          | string  | Default token that will be used if one is not specified in the [Alertmanager Configuration](#alertmanager-configuration) |
-| ENABLE_TLS                   | Optional          | boolean | Enables HTTPS                                                                                                            |
-| server                       |
+| ENABLE_TLS                   | Optional          | boolean | Enables HTTPS Server                                                                                                     |
 | NODE_TLS_REJECT_UNAUTHORIZED | Optional          | integer | Disable TLS Reject Unauthorized (0 to disable)                                                                           |
 
 ---
