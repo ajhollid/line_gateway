@@ -4,4 +4,6 @@ COPY src src
 COPY ssl ssl
 ENV npm_config_cache /tmp/npm
 RUN npm install
+RUN chown -R 1000980000:0 "/tmp/npm"
+
 CMD ["npm", "start"]

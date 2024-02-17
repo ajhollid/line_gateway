@@ -1,0 +1,14 @@
+curl --request POST \
+  --url http://demo-webhook-forwader-alex-demo.apps.oc.webcomm.com.tw/notify \
+  --header 'Authorization: Bearer Xhc2GWMsrCy3tJFzVJBiQeRuRfJs8zA2S0YWbRHdm9I' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"groupLabels": {},
+	"commonLabels": {
+		"alertname": "GrafanaDownTeamTwo",
+		"severity": "critical"
+	},
+	"commonAnnotations": {
+		"summary": "Grafana is down"
+	}
+}'
