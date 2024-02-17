@@ -1,7 +1,8 @@
 curl --request POST \
-  --url http://demo-webhook-forwader-alex-demo.apps.oc.webcomm.com.tw/notify \
+  --url http://127.0.0.1:8080/notify \
   --header 'Authorization: Bearer Xhc2GWMsrCy3tJFzVJBiQeRuRfJs8zA2S0YWbRHdm9I' \
   --header 'Content-Type: application/json' \
+  --proxy http://10.100.130.70:80 \
   --data '{
 	"groupLabels": {},
 	"commonLabels": {
