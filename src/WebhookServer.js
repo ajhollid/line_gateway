@@ -78,9 +78,10 @@ const extractProperty = (obj, property) => {
   return "";
 };
 
-const buildMessage = (alerts) => {
-  let message = "";
+const buildMessages = (alerts) => {
+  let messages = [];
   for (let i = 0; i < alerts.length; i++) {
+    let message = "";
     let alert = alerts[i];
     let status = extractProperty(alert, "status");
     let labels = extractProperty(alert, "labels");
@@ -99,9 +100,9 @@ const buildMessage = (alerts) => {
     severity && (message += ` ${severity}`);
     summary && (message += "\n" + "Summary: " + summary);
     description && (message += "\n" + "Description: " + description);
-    if (i < alerts.length - 1) message += "\n\n";
+    messages.push(message);
   }
-  return message;
+  return messages;
 };
 
 const postNotify = (req, res) => {
@@ -120,36 +121,44 @@ const postNotify = (req, res) => {
   if (!token) token = process.env.DEFAULT_LINE_TOKEN;
 
   // Build message for LINE Notify if we have a token
-  let message = "";
-  if (token) message = buildMessage(alerts);
+  let messages = [];
+  if (token) messages = buildMessages(alerts);
 
-  // Post message to LINE Notify if a token and message has been supplied
-  if (token && message) {
-    const form = new FormData();
-    form.append("message", message);
+  // Post messages to LINE Notify if a token and message has been supplied
+  if (token && messages.length > 0) {
+    // Map all messages to requests
+    const requests = messages.map((message) => {
+      const form = new FormData();
+      form.append("message", message);
 
-    const config = {
-      method: "POST",
-      body: form,
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    };
+      const config = {
+        method: "POST",
+        body: form,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      };
 
-    if (PROXY_AGENT) {
-      config.agent = PROXY_AGENT;
-    }
+      if (PROXY_AGENT) {
+        config.agent = PROXY_AGENT;
+      }
 
-    fetch(REQUEST_URL, config)
-      .then((response) => response.text())
-      .then((body) => {
-        console.log(buildBoldLog("Success: " + body));
-        res.send(body);
-      })
-      .catch((err) => {
-        console.error(buildBoldLog("Error: " + err.message));
-        res.send(err.message);
-      });
+      return fetch(REQUEST_URL, config)
+        .then((response) => response.text())
+        .then((body) => {
+          console.log(buildBoldLog("Success: " + body));
+          return "Success: " + body;
+        })
+        .catch((err) => {
+          console.error(buildBoldLog("Error: " + err.message));
+          res.send(err.message);
+        });
+    });
+
+    // Send all the requests
+    Promise.all(requests).then((results) => {
+      res.send(results);
+    });
   } else {
     // Otherwise log error
     !token &&
@@ -157,7 +166,7 @@ const postNotify = (req, res) => {
         buildBoldLog("No token has been supplied, request not sent")
       );
 
-    !message &&
+    !messages.length > 0 &&
       console.error(
         buildBoldLog("No message has been supplied, request not sent")
       );
@@ -194,7 +203,7 @@ app.get("/health", (req, res) => {
   }
 });
 
-export { buildMessage, extractTokenFromHeaders, extractProperty };
+export { buildMessages, extractTokenFromHeaders, extractProperty };
 
 // Sample Request
 
