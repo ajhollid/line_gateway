@@ -6,4 +6,8 @@ ENV npm_config_cache /tmp/npm
 RUN npm install
 RUN chown -R 1000980000:0 "/tmp/npm"
 
-CMD ["npm", "start"]
+# Install tini to handle SIGINT and SIGTERM
+RUN apk add --no-cache tini
+ENTRYPOINT ["/sbin/tini", "--"]
+
+CMD ["node", "./src/WebhookServer.js"]

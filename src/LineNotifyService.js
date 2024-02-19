@@ -36,18 +36,12 @@ const mapMessagesToRequests = (messages, token) => {
   });
 };
 
-const postToLineServer = (res, messages, token) => {
+const postToLineServer = (messages, token) => {
   // Map all messages to requests
   const requests = mapMessagesToRequests(messages, token);
 
   // Send all the requests
-  return Promise.all(requests)
-    .then((results) => {
-      res.send(results);
-    })
-    .catch((err) => {
-      throw new ServerException(500, err);
-    });
+  return Promise.all(requests);
 };
 
 export default { postToLineServer };

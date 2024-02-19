@@ -40,8 +40,9 @@ app.use(
 );
 
 const upload = multer();
-
-// If SSL has been enabled, start the HTTPS server
+// ************************
+// If SSL has been enabled, start the HTTPS server, otherwise start HTTP Server
+// ************************
 if (ENABLE_TLS) {
   try {
     const key = fs.readFileSync(path.join(__dirname, "../ssl/key.pem"));
@@ -58,7 +59,6 @@ if (ENABLE_TLS) {
   }
 }
 
-// If it hasn't been enabled, start the HTTP server
 !ENABLE_TLS &&
   http.createServer(app).listen(PORT, () => {
     console.log(buildBoldLog(`Listening for HTTP on port: ${PORT}`));
@@ -68,7 +68,7 @@ if (ENABLE_TLS) {
 // POST /notify
 // *********************
 
-const postNotify = (req, res) => {
+app.post("/notify/", upload.none(), (req, res, next) => {
   // ********************
   // Log alert received
   // ********************
@@ -120,11 +120,14 @@ const postNotify = (req, res) => {
     console.log("No messages were built, request not sent");
     throw new ServerException(400, "No messages found, request not sent");
   }
-  LineNotifyService.postToLineServer(res, messages, token);
-};
 
-app.post("/notify/", upload.none(), (req, res, next) => {
-  postNotify(req, res, next);
+  LineNotifyService.postToLineServer(res, messages, token)
+    .then((results) => {
+      res.send(results);
+    })
+    .catch((err) => {
+      throw new ServerException(500, err);
+    });
 });
 
 // *********************
@@ -152,8 +155,25 @@ app.get("/health", (req, res) => {
   }
 });
 
+// *********************
+// Error handling
+// *********************
 app.use((err, req, res, next) => {
   res
     .status(err.httpStatus || 500)
     .json({ status: err.httpStatus, message: err.message });
+});
+
+// *********************
+// Handle termination signals
+// *********************
+
+process.on("SIGINT", () => {
+  console.log(buildBoldLog("Caught interrupt signal"));
+  process.exit();
+});
+
+process.on("SIGTERM", () => {
+  console.log(buildBoldLog("Caught termination signal"));
+  process.exit();
 });
