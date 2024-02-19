@@ -1,8 +1,12 @@
-const severityColorLookup = {
-  none: () => "🔵",
-  warning: () => "🟡",
-  critical: () => "🔴",
-  default: () => "⚪",
+const SEVERITY_LOOKUP = new Map([
+  ["none", "🔵"],
+  ["warning", "🟡"],
+  ["critical", "🔴"],
+  ["default", "⚪"],
+]);
+
+const severityColorLookup = (severity) => {
+  return SEVERITY_LOOKUP.get(severity) || SEVERITY_LOOKUP.get("default");
 };
 
 const buildBoldLog = (msg) => {

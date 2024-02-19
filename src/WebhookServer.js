@@ -1,4 +1,4 @@
-import { buildBoldLog, severityColorLookup } from "./TextUtils.js";
+import { buildBoldLog } from "./TextUtils.js";
 import express from "express";
 import prometheus from "express-prometheus-middleware";
 import bodyParser from "body-parser";
@@ -9,21 +9,17 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import "dotenv/config";
-import fetch from "node-fetch";
-import { HttpsProxyAgent } from "https-proxy-agent";
 import yn from "yn";
-
+import {
+  extractProperty,
+  extractTokenFromHeaders,
+  buildMessages,
+} from "./MessageUtils.js";
+import LineNotifyService from "./LineNotifyService.js";
 const REQUEST_URL = process.env.REQUEST_URL;
 const ENABLE_TLS = yn(process.env.ENABLE_TLS);
 const HTTPS_PORT = 8443;
 const PORT = 8080;
-
-//Configure proxy agent if it is specified
-let PROXY_AGENT;
-if (process.env.PROXY_URL) {
-  PROXY_AGENT = new HttpsProxyAgent(process.env.PROXY_URL);
-  console.log(buildBoldLog("Proxy: " + process.env.PROXY_URL));
-}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,115 +61,51 @@ if (ENABLE_TLS) {
 // POST /notify
 // *********************
 
-const extractTokenFromHeaders = (req) => {
-  let authHeader = req?.headers?.authorization;
-  if (typeof authHeader == "string" && authHeader.startsWith("Bearer ")) {
-    return authHeader.substring(7, authHeader.length);
-  }
-  return "";
-};
-
-const extractProperty = (obj, property) => {
-  if (obj && obj[property]) return obj[property];
-  return "";
-};
-
-const buildMessages = (alerts) => {
-  let messages = [];
-  for (let i = 0; i < alerts.length; i++) {
-    let message = "";
-    let alert = alerts[i];
-    let status = extractProperty(alert, "status");
-    let labels = extractProperty(alert, "labels");
-    let annotations = extractProperty(alert, "annotations");
-    let alertname = extractProperty(labels, "alertname");
-    let severity = extractProperty(labels, "severity");
-    let summary = extractProperty(annotations, "summary");
-    let description = extractProperty(annotations, "description");
-    alertname && (message += "\nAlert Name: " + alertname);
-    status && (message += "\nStatus: " + status);
-    severity && (message += "\n" + "Severity: ");
-    severity &&
-      (severityColorLookup[severity]
-        ? (message += severityColorLookup[severity]())
-        : (message += severityColorLookup.default()));
-    severity && (message += ` ${severity}`);
-    summary && (message += "\n" + "Summary: " + summary);
-    description && (message += "\n" + "Description: " + description);
-    messages.push(message);
-  }
-  return messages;
-};
-
 const postNotify = (req, res) => {
-  //Extract properties from request
-  const alerts = extractProperty(req.body, "alerts");
-
-  const alerts = extractProperty(req.body, "alerts");
-
+  // ********************
+  // Log alert received
+  // ********************
   const time = new Date();
-
-  // Log time of alert and request body
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
   console.log(JSON.stringify(req.body));
 
-  //Extract LINE token from request headers
-  let token = extractTokenFromHeaders(req);
-  //  Load a default token from environtmental variables if one is not present in headers
-  if (!token) token = process.env.DEFAULT_LINE_TOKEN;
-
-  // Build message for LINE Notify if we have a token
-  let messages = [];
-  if (token) messages = buildMessages(alerts);
-
-  // Post messages to LINE Notify if a token and message has been supplied
-  if (token && messages.length > 0) {
-    // Map all messages to requests
-    const requests = messages.map((message) => {
-      const form = new FormData();
-      form.append("message", message);
-
-      const config = {
-        method: "POST",
-        body: form,
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      };
-
-      if (PROXY_AGENT) {
-        config.agent = PROXY_AGENT;
-      }
-
-      return fetch(REQUEST_URL, config)
-        .then((response) => response.text())
-        .then((body) => {
-          console.log(buildBoldLog("Success: " + body));
-          return "Success: " + body;
-        })
-        .catch((err) => {
-          console.error(buildBoldLog("Error: " + err.message));
-          res.send(err.message);
-        });
-    });
-
-    // Send all the requests
-    Promise.all(requests).then((results) => {
-      res.send(results);
-    });
+  // ********************
+  // Try to get token from headers, if not present, look for default token
+  // If no token supplied, send an error
+  // ********************
+  let token = null;
+  if (req && req.headers) {
+    token = extractTokenFromHeaders(req);
   } else {
-    // Otherwise log error
-    !token &&
-      console.error(
-        buildBoldLog("No token has been supplied, request not sent")
-      );
-
-    !messages.length > 0 &&
-      console.error(
-        buildBoldLog("No message has been supplied, request not sent")
-      );
-    res.send("Error");
+    token = process.env.DEFAULT_LINE_TOKEN;
   }
+
+  if (!token) {
+    res.error("No token has been supplied, request not sent");
+  }
+
+  // ********************
+  // Check for a request URL
+  // ********************
+  if (!REQUEST_URL) {
+    res.error("No request URL has been supplied, request not sent");
+  }
+
+  // ********************
+  // Build message for LINE server
+  // ********************
+  const alerts = extractProperty(req.body, "alerts");
+  if (!alerts) {
+    res.error("No alerts found, request not sent");
+  }
+
+  let messages = buildMessages(alerts);
+  if (messages.length <= 0) {
+    console.log("No messages were built, request not sent");
+    res.error("No messages found, request not sent");
+  }
+
+  LineNotifyService.postToLineServer(res, messages, token);
 };
 
 app.post("/notify/", upload.none(), (req, res) => {
@@ -204,42 +136,3 @@ app.get("/health", (req, res) => {
     res.status(503).send;
   }
 });
-
-export { buildMessages, extractTokenFromHeaders, extractProperty };
-
-// Sample Request
-
-// {
-//   "alerts":[
-//      {
-//         "status":"firing",
-//         "labels":[
-//            "Object"
-//         ],
-//         "annotations":{
-
-//         },
-//         "startsAt":"2024-01-17T05:57:27.549Z",
-//         "endsAt":"0001-01-01T00:00:00Z",
-//         "generatorURL":"http://demo-prometheus-deployment-5dcd658b49-9wgtx:9090/graph?g0.expr=up%7Bjob%3D%22grafana%22%7D+%3D%3D+0&g0.tab=1",
-//         "fingerprint":"22ab40c8fd052d55"
-//      }
-//   ],
-//   "groupLabels":{
-
-//   },
-//   "commonLabels":{
-//      "alertname":"GrafanaDown",
-//      "instance":"demo-grafana-service.alex-demo.svc.cluster.local:443",
-//      "job":"grafana",
-//      "severity":"critical",
-//      "team":"line"
-//   },
-//   "commonAnnotations":{
-
-//   },
-//   "externalURL":"http://demo-alertmanager-deployment-7bf46c5b5c-pdw79:9093",
-//   "version":"4",
-//   "groupKey":"{}/{team=\"line\"}:{}",
-//   "truncatedAlerts":0
-// }
