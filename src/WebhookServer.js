@@ -68,7 +68,7 @@ if (ENABLE_TLS) {
 // POST /notify
 // *********************
 
-app.post("/notify/", upload.none(), (req, res, next) => {
+app.post("/notify/", upload.none(), (req, res) => {
   // ********************
   // Log alert received
   // ********************
@@ -121,7 +121,7 @@ app.post("/notify/", upload.none(), (req, res, next) => {
     throw new ServerException(400, "No messages found, request not sent");
   }
 
-  LineNotifyService.postToLineServer(res, messages, token)
+  LineNotifyService.postToLineServer(messages, token)
     .then((results) => {
       res.send(results);
     })

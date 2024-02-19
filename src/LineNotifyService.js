@@ -1,6 +1,5 @@
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { buildBoldLog } from "./TextUtils.js";
-import ServerException from "./ServerException.js";
 const REQUEST_URL = process.env.REQUEST_URL;
 
 //Configure proxy agent if it is specified
