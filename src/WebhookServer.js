@@ -16,6 +16,9 @@ import {
   buildMessages,
 } from "./MessageUtils.js";
 import LineNotifyService from "./LineNotifyService.js";
+import ServerException from "./ServerException.js";
+import HttpStatus from "http-status-codes";
+
 const REQUEST_URL = process.env.REQUEST_URL;
 const ENABLE_TLS = yn(process.env.ENABLE_TLS);
 const HTTPS_PORT = 8443;
@@ -35,6 +38,7 @@ app.use(
     responseLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
   })
 );
+
 const upload = multer();
 
 // If SSL has been enabled, start the HTTPS server
@@ -47,7 +51,10 @@ if (ENABLE_TLS) {
     });
   } catch (err) {
     console.log(buildBoldLog("Something went wrong starting HTTPS server"));
-    console.error(err);
+    throw new ServerException(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "Something went wrong starting HTTPS server"
+    );
   }
 }
 
@@ -81,14 +88,20 @@ const postNotify = (req, res) => {
   }
 
   if (!token) {
-    res.error("No token has been supplied, request not sent");
+    throw new ServerException(
+      HttpStatus.UNAUTHORIZED,
+      "No token supplied, request not sent"
+    );
   }
 
   // ********************
   // Check for a request URL
   // ********************
   if (!REQUEST_URL) {
-    res.error("No request URL has been supplied, request not sent");
+    throw new ServerException(
+      HttpStatus.BAD_REQUEST,
+      "No request URL supplied"
+    );
   }
 
   // ********************
@@ -96,20 +109,22 @@ const postNotify = (req, res) => {
   // ********************
   const alerts = extractProperty(req.body, "alerts");
   if (!alerts) {
-    res.error("No alerts found, request not sent");
+    throw new ServerException(
+      HttpStatus.BAD_REQUEST,
+      "No alerts found, request not sent"
+    );
   }
 
   let messages = buildMessages(alerts);
   if (messages.length <= 0) {
     console.log("No messages were built, request not sent");
-    res.error("No messages found, request not sent");
+    throw new ServerException(400, "No messages found, request not sent");
   }
-
   LineNotifyService.postToLineServer(res, messages, token);
 };
 
-app.post("/notify/", upload.none(), (req, res) => {
-  postNotify(req, res);
+app.post("/notify/", upload.none(), (req, res, next) => {
+  postNotify(req, res, next);
 });
 
 // *********************
@@ -133,6 +148,12 @@ app.get("/health", (req, res) => {
     res.send(healthCheck);
   } catch (err) {
     healthCheck.message = err;
-    res.status(503).send;
+    throw new ServerException(HttpStatus.INTERNAL_SERVER_ERROR, err);
   }
+});
+
+app.use((err, req, res, next) => {
+  res
+    .status(err.httpStatus || 500)
+    .json({ status: err.httpStatus, message: err.message });
 });
