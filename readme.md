@@ -158,24 +158,24 @@ docker run <ImageTag>
 Colors for severity levels are mapped in `src/TextUtils.js`
 
 ```
-const severityColorLookup = {
-  none: () => "🔵 ",
-  warning: () => "🟡 ",
-  critical: () => "🔴 ",
-  default: () => "⚪ ",
-};
+const SEVERITY_LOOKUP = new Map([
+  ["none", "🔵"],
+  ["warning", "🟡"],
+  ["critical", "🔴"],
+  ["default", "⚪"],
+]);
 ```
 
 For other severity levels, add another mapping:
 
 ```
-const severityColorLookup = {
-  none: () => "🔵 ",
-  warning: () => "🟡 ",
-  critical: () => "🔴 ",
-  default: () => "⚪ ",
-  resolved: () => "🟢 "
-};
+const SEVERITY_LOOKUP = new Map([
+  ["none", "🔵"],
+  ["warning", "🟡"],
+  ["critical", "🔴"],
+  ["default", "⚪"],
+  ["resolved", "🟢"]
+]);
 ```
 
 ![Screenshot](screenshot.png)

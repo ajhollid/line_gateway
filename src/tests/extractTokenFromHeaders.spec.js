@@ -1,33 +1,33 @@
 import * as chai from "chai";
 import { describe, it } from "mocha";
-import { extractTokenFromHeaders } from "../WebhookServer.js";
+import { extractTokenFromHeaders } from "../MessageUtils.js";
 let expect = chai.expect;
 let testToken = "test_token";
 
 describe("extractTokenFromHeaders()", () => {
   describe("Try to extract token from undefined request", () => {
-    it("Should return an empty string", () => {
-      expect(extractTokenFromHeaders(undefined)).to.equal("");
+    it("Should return null", () => {
+      expect(extractTokenFromHeaders(undefined)).to.equal(null);
     });
   });
 
   describe("Try to extract token from request with no headers", () => {
-    it("Should return an empty string", () => {
-      expect(extractTokenFromHeaders({})).to.equal("");
+    it("Should return null", () => {
+      expect(extractTokenFromHeaders({})).to.equal(null);
     });
   });
 
   describe("Try to extract token from headers with no auth", () => {
-    it("Should return an empty string", () => {
-      expect(extractTokenFromHeaders({ headers: {} })).to.equal("");
+    it("Should return null", () => {
+      expect(extractTokenFromHeaders({ headers: {} })).to.equal(null);
     });
   });
 
   describe("Try to extract token from headers with no bearer token", () => {
-    it("Should return an empty string", () => {
+    it("Should return null", () => {
       expect(
         extractTokenFromHeaders({ headers: { authorization: "test" } })
-      ).to.equal("");
+      ).to.equal(null);
     });
   });
 
@@ -42,12 +42,12 @@ describe("extractTokenFromHeaders()", () => {
   });
 
   describe("Try to extract token from headers with invalid token format", () => {
-    it("Should return an empty string", () => {
+    it("Should return null", () => {
       expect(
         extractTokenFromHeaders({
           headers: { authorization: 123 },
         })
-      ).to.equal("");
+      ).to.equal(null);
     });
   });
 });

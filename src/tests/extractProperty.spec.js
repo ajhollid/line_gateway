@@ -1,27 +1,27 @@
 import * as chai from "chai";
 import { describe, it } from "mocha";
-import { extractProperty } from "../WebhookServer.js";
+import { extractProperty } from "../MessageUtils.js";
 let expect = chai.expect;
 
 describe("extractCommonLabelsFromReq()", () => {
   describe("Try to extract labels from undefined body", () => {
-    it("Should return an empty object", () => {
-      expect(extractProperty(undefined), "commonLabels").to.equal("");
+    it("Should return null", () => {
+      expect(extractProperty(undefined), "commonLabels").to.equal(null);
     });
   });
 
   describe("Try to extract labels from request with empty body", () => {
-    it("Should return an empty object", () => {
-      expect(extractProperty({}), "commonLabels").to.deep.equal("");
+    it("Should return null", () => {
+      expect(extractProperty({}), "commonLabels").to.deep.equal(null);
     });
   });
 
   describe("Try to extract labels from request with no common labels", () => {
-    it("Should return an empty object", () => {
+    it("Should return null", () => {
       expect(
         extractProperty({ commonLabels: {} }),
         "commonLabels"
-      ).to.deep.equal("");
+      ).to.deep.equal(null);
     });
   });
 
@@ -37,14 +37,14 @@ describe("extractCommonLabelsFromReq()", () => {
   });
 
   describe("Try to extract nonexistant property from request", () => {
-    it("Should return an empty object", () => {
+    it("Should return null", () => {
       expect(
         extractProperty(
           { commonLabels: { label1: "test", label2: "test2" } },
 
           "nonexistantProperty"
         )
-      ).to.deep.equal("");
+      ).to.deep.equal(null);
     });
   });
 });
