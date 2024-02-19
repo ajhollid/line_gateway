@@ -67,14 +67,13 @@ if (ENABLE_TLS) {
 // *********************
 // POST /notify
 // *********************
-
 app.post("/notify/", upload.none(), (req, res) => {
   // ********************
   // Log alert received
   // ********************
   const time = new Date();
   console.log(buildBoldLog("Alert received at: " + time.toLocaleString()));
-  console.log(JSON.stringify(req.body));
+  console.log(JSON.stringify(req.body, null, 2));
 
   // ********************
   // Try to get token from headers, if not present, look for default token
@@ -133,7 +132,6 @@ app.post("/notify/", upload.none(), (req, res) => {
 // *********************
 // GET /health
 // *********************
-
 app.get("/health", (req, res) => {
   let uptime = new Date(Math.floor(process.uptime()) * 1000)
     .toISOString()
