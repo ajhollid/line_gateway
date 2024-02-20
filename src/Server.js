@@ -30,17 +30,6 @@ if (!Config.REQUEST_URL) {
 HttpServerSetup.setupServer(app);
 
 // *********************
-// Handle termination signals
-// *********************
-const handleTerminationSignals = (signal) => {
-  console.log(TextUtils.buildBoldLog(`${signal}, ending process...`));
-  process.exit();
-};
-
-process.on("SIGINT", () => handleTerminationSignals("SIGINT"));
-process.on("SIGTERM", () => handleTerminationSignals("SIGTERM"));
-
-// *********************
 // POST /notify
 // *********************
 app.post("/notify/", upload.none(), NotifyController.handleNotify);
