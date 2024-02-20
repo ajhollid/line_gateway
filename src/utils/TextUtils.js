@@ -14,4 +14,4 @@ const buildBoldLog = (msg) => {
   return "\n" + str + "\n" + msg + "\n" + str + "\n";
 };
 
-export { severityColorLookup, buildBoldLog };
+export default { severityColorLookup, buildBoldLog };

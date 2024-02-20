@@ -1,4 +1,4 @@
-import { severityColorLookup } from "./TextUtils.js";
+import TextUtils from "./TextUtils.js";
 
 const extractTokenFromHeaders = (req) => {
   let authHeader = req?.headers?.authorization;
@@ -32,7 +32,11 @@ const buildMessages = (alerts) => {
     status && (message += "\nStatus: " + status);
     severity &&
       (message +=
-        "\n" + "Severity: " + severityColorLookup(severity) + " " + severity);
+        "\n" +
+        "Severity: " +
+        TextUtils.severityColorLookup(severity) +
+        " " +
+        severity);
 
     summary && (message += "\n" + "Summary: " + summary);
     description && (message += "\n" + "Description: " + description);
@@ -43,4 +47,4 @@ const buildMessages = (alerts) => {
   return messages;
 };
 
-export { buildMessages, extractProperty, extractTokenFromHeaders };
+export default { buildMessages, extractProperty, extractTokenFromHeaders };

@@ -5,8 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/WebhookServer.js",
-    "startdev": "nodemon src/WebhookServer.js",
+    "start": "node src/Server.js",
+    "startdev": "nodemon src/Server.js",
     "eslint": "eslint ./src",
     "eslint-fix": "eslint ./src --fix",
     "test": "mocha ./src/tests/*.spec.js --exit",
@@ -19,7 +19,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "1.20.2",
     "dotenv": "16.4.0",
     "express": "4.18.2",
     "express-prometheus-middleware": "1.2.0",

@@ -10,4 +10,4 @@ RUN chown -R 1000980000:0 "/tmp/npm"
 RUN apk add --no-cache tini
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD ["node", "./src/WebhookServer.js"]
+CMD ["node", "./src/Server.js"]

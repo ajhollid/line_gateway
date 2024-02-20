@@ -1,13 +1,16 @@
 import { HttpsProxyAgent } from "https-proxy-agent";
-import { buildBoldLog } from "./TextUtils.js";
-const REQUEST_URL = process.env.REQUEST_URL;
+import TextUtils from "../utils/TextUtils.js";
+import Config from "../config/Config.js";
 
 //Configure proxy agent if it is specified
 let PROXY_AGENT;
-if (process.env.PROXY_URL) {
-  PROXY_AGENT = new HttpsProxyAgent(process.env.PROXY_URL);
-  console.log(buildBoldLog("Proxy: " + process.env.PROXY_URL));
-}
+
+const setupProxyAgent = () => {
+  if (Config.PROXY_URL) {
+    PROXY_AGENT = new HttpsProxyAgent(Config.PROXY_URL);
+    console.log(TextUtils.buildBoldLog("Proxy: " + Config.PROXY_URL));
+  }
+};
 
 const mapMessagesToRequests = (messages, token) => {
   return messages.map((message) => {
@@ -25,21 +28,15 @@ const mapMessagesToRequests = (messages, token) => {
     if (PROXY_AGENT) {
       config.agent = PROXY_AGENT;
     }
-
-    return fetch(REQUEST_URL, config)
-      .then((response) => response.text())
-      .then((body) => {
-        console.log(buildBoldLog("Success: " + body));
-        return "Success: " + body;
-      });
+    return fetch(Config.REQUEST_URL, config).then((response) =>
+      response.json()
+    );
   });
 };
 
 const postToLineServer = (messages, token) => {
-  // Map all messages to requests
+  setupProxyAgent();
   const requests = mapMessagesToRequests(messages, token);
-
-  // Send all the requests
   return Promise.all(requests);
 };
 
