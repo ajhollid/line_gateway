@@ -155,7 +155,7 @@ docker run <ImageTag>
 
 ## Adding colors for severity levels
 
-Colors for severity levels are mapped in `src/TextUtils.js`
+Colors for severity levels are mapped in `src/utils/TextUtils.js`
 
 ```
 const SEVERITY_LOOKUP = new Map([
