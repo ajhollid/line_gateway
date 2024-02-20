@@ -64,4 +64,9 @@ const handleNotify = async (req, res, next) => {
   }
 };
 
-export default { handleNotify };
+export default {
+  handleNotify,
+  NO_ALERTS_ERROR,
+  NO_TOKEN_ERROR,
+  NO_MESSAGES_ERROR,
+};

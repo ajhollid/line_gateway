@@ -6,7 +6,9 @@ const SEVERITY_LOOKUP = new Map([
 ]);
 
 const severityColorLookup = (severity) => {
-  return SEVERITY_LOOKUP.get(severity) || SEVERITY_LOOKUP.get("default");
+  return SEVERITY_LOOKUP.has(severity)
+    ? SEVERITY_LOOKUP.get(severity)
+    : SEVERITY_LOOKUP.get("default");
 };
 
 const buildBoldLog = (msg) => {

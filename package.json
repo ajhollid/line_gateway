@@ -13,7 +13,8 @@
     "test-text-utils": "mocha ./src/tests/textUtils.spec.js --exit",
     "test-build-messages": "mocha ./src/tests/buildMessages.spec.js --exit",
     "test-extract-token": "mocha ./src/tests/extractTokenFromHeaders.spec.js --exit",
-    "test-extract-property": "mocha ./src/tests/extractProperty.spec.js --exit"
+    "test-extract-property": "mocha ./src/tests/extractProperty.spec.js --exit",
+    "test-notify-controller": "mocha ./src/tests/NotifyController.spec.js --exit"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +35,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.29.1",
     "mocha": "10.2.0",
-    "nodemon": "3.0.3"
+    "nodemon": "3.0.3",
+    "sinon": "17.0.1"
   }
 }

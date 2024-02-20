@@ -14,37 +14,29 @@ const extractProperty = (obj, property) => {
 };
 
 const buildMessages = (alerts) => {
-  let messages = [];
+  if (!alerts || alerts.length == 0) return [];
 
-  if (!alerts || alerts.length == 0) return messages;
+  return alerts
+    .map((alert) => {
+      const status = extractProperty(alert, "status");
+      const labels = extractProperty(alert, "labels");
+      const annotations = extractProperty(alert, "annotations");
+      const alertname = extractProperty(labels, "alertname");
+      const severity = extractProperty(labels, "severity");
+      const summary = extractProperty(annotations, "summary");
+      const description = extractProperty(annotations, "description");
 
-  for (let i = 0; i < alerts.length; i++) {
-    let message = "";
-    let alert = alerts[i];
-    let status = extractProperty(alert, "status");
-    let labels = extractProperty(alert, "labels");
-    let annotations = extractProperty(alert, "annotations");
-    let alertname = extractProperty(labels, "alertname");
-    let severity = extractProperty(labels, "severity");
-    let summary = extractProperty(annotations, "summary");
-    let description = extractProperty(annotations, "description");
-    alertname && (message += "\nAlert Name: " + alertname);
-    status && (message += "\nStatus: " + status);
-    severity &&
-      (message +=
-        "\n" +
-        "Severity: " +
-        TextUtils.severityColorLookup(severity) +
-        " " +
-        severity);
-
-    summary && (message += "\n" + "Summary: " + summary);
-    description && (message += "\n" + "Description: " + description);
-    if (message != "") {
-      messages.push(message);
-    }
-  }
-  return messages;
+      let messageParts = [
+        alertname && `Alert Name: ${alertname}`,
+        status && `Status: ${status}`,
+        severity &&
+          `Severity: ${TextUtils.severityColorLookup(severity)} ${severity}`,
+        summary && `Summary: ${summary}`,
+        description && `Description: ${description}`,
+      ].filter(Boolean);
+      return messageParts.length > 0 ? `\n${messageParts.join("\n")}` : null;
+    })
+    .filter(Boolean);
 };
 
 export default { buildMessages, extractProperty, extractTokenFromHeaders };
