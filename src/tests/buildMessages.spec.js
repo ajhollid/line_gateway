@@ -1,13 +1,12 @@
 import * as chai from "chai";
 import { describe, it } from "mocha";
-import { buildMessages } from "../MessageUtils.js";
-import { severityColorLookup } from "../TextUtils.js";
+import MessageUtils from "../utils//MessageUtils.js";
+import TextUtils from "../utils/TextUtils.js";
 let expect = chai.expect;
 
 describe("buildMessage()", () => {
   let alertname = "Test Alert";
   let status = "Firing";
-  let group = "Test Group";
   let severity = "critical";
   let unknownSeverity = "unknownSeverity";
   let summary = "Test Summary";
@@ -15,21 +14,21 @@ describe("buildMessage()", () => {
 
   describe("Build messages from null array", () => {
     it("Should return an empty message", () => {
-      expect(buildMessages(null)).deep.to.equal([]);
+      expect(MessageUtils.buildMessages(null)).deep.to.equal([]);
     });
   });
 
   describe("Build message array with empty lables and empty annotations", () => {
     it("Should return an array with one empty message", () => {
       let sampleAlert = { labels: {}, annotations: {} };
-      expect(buildMessages([sampleAlert])).deep.to.equal([]);
+      expect(MessageUtils.buildMessages([sampleAlert])).deep.to.equal([]);
     });
   });
 
   describe("Build message array with one message and alert name only", () => {
     it("Should return an array with one message with only an alert name", () => {
       let sampleAlert = { labels: { alertname } };
-      expect(buildMessages([sampleAlert])).to.deep.equal([
+      expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nAlert Name: " + alertname,
       ]);
     });
@@ -38,7 +37,7 @@ describe("buildMessage()", () => {
   describe("Build message array with one message and status only", () => {
     it("Should return an array with one message with a status", () => {
       let sampleAlert = { status };
-      expect(buildMessages([sampleAlert])).to.deep.equal([
+      expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nStatus: " + status,
       ]);
     });
@@ -47,17 +46,19 @@ describe("buildMessage()", () => {
   describe("Build message array with one message with severity level only", () => {
     it("Should return an array with one message with a severity level", () => {
       let sampleAlert = { labels: { severity } };
-      expect(buildMessages([sampleAlert])).to.deep.equal([
-        "\nSeverity: " + severityColorLookup(severity) + ` ${severity}`,
+      expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
+        "\nSeverity: " +
+          TextUtils.severityColorLookup(severity) +
+          ` ${severity}`,
       ]);
     });
   });
 
   describe("Build message array with one message with unknown severity level only", () => {
     it("Should return an array with one message with default severity level", () => {
-      const severityEmoji = severityColorLookup(unknownSeverity);
+      const severityEmoji = TextUtils.severityColorLookup(unknownSeverity);
       let sampleAlert = { labels: { severity: unknownSeverity } };
-      expect(buildMessages([sampleAlert])).to.deep.equal([
+      expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nSeverity: " + severityEmoji + ` ${unknownSeverity}`,
       ]);
     });
@@ -66,7 +67,7 @@ describe("buildMessage()", () => {
   describe("Build message array with one message with summary only", () => {
     it("Should return an array of messages with one message with a summary", () => {
       let sampleAlert = { annotations: { summary } };
-      expect(buildMessages([sampleAlert])).to.deep.equal([
+      expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nSummary: " + summary,
       ]);
     });
@@ -75,7 +76,7 @@ describe("buildMessage()", () => {
   describe("Build an array of messages with one message with description only", () => {
     it("Should return an array of messages with one message with a description", () => {
       let sampleAlert = { annotations: { description } };
-      expect(buildMessages([sampleAlert])).to.deep.equal([
+      expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nDescription: " + description,
       ]);
     });
@@ -94,7 +95,7 @@ describe("buildMessage()", () => {
         },
         status: undefined,
       };
-      expect(buildMessages([sampleAlert])).to.deep.equal([]);
+      expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([]);
     });
   });
 
@@ -105,14 +106,14 @@ describe("buildMessage()", () => {
         labels: { alertname, severity },
         annotations: { summary, description },
       };
-      expect(buildMessages([sampleAlert])).to.deep.equal([
+      expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nAlert Name: " +
           alertname +
           "\nStatus: " +
           status +
           "\n" +
           "Severity: " +
-          severityColorLookup(severity) +
+          TextUtils.severityColorLookup(severity) +
           ` ${severity}` +
           "\n" +
           "Summary: " +
@@ -132,14 +133,16 @@ describe("buildMessage()", () => {
         annotations: { summary, description },
       };
 
-      expect(buildMessages([sampleAlert, sampleAlert])).to.deep.equal([
+      expect(
+        MessageUtils.buildMessages([sampleAlert, sampleAlert])
+      ).to.deep.equal([
         "\nAlert Name: " +
           alertname +
           "\nStatus: " +
           status +
           "\n" +
           "Severity: " +
-          severityColorLookup(severity) +
+          TextUtils.severityColorLookup(severity) +
           ` ${severity}` +
           "\n" +
           "Summary: " +
@@ -153,7 +156,7 @@ describe("buildMessage()", () => {
           status +
           "\n" +
           "Severity: " +
-          severityColorLookup(severity) +
+          TextUtils.severityColorLookup(severity) +
           ` ${severity}` +
           "\n" +
           "Summary: " +
@@ -185,22 +188,24 @@ describe("buildMessage()", () => {
         status: undefined,
       };
 
-      expect(buildMessages([sampleAlert, badAlert])).to.deep.equal([
-        "\nAlert Name: " +
-          alertname +
-          "\nStatus: " +
-          status +
-          "\n" +
-          "Severity: " +
-          severityColorLookup(severity) +
-          ` ${severity}` +
-          "\n" +
-          "Summary: " +
-          summary +
-          "\n" +
-          "Description: " +
-          description,
-      ]);
+      expect(MessageUtils.buildMessages([sampleAlert, badAlert])).to.deep.equal(
+        [
+          "\nAlert Name: " +
+            alertname +
+            "\nStatus: " +
+            status +
+            "\n" +
+            "Severity: " +
+            TextUtils.severityColorLookup(severity) +
+            ` ${severity}` +
+            "\n" +
+            "Summary: " +
+            summary +
+            "\n" +
+            "Description: " +
+            description,
+        ]
+      );
     });
   });
 });
