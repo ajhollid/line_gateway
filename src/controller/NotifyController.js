@@ -51,7 +51,6 @@ const handleNotify = async (req, res, next) => {
 
   let messages = MessageUtils.buildMessages(alerts);
   if (messages.length <= 0) {
-    console.log(TextUtils.buildBoldLog(NO_MESSAGES_ERROR));
     next(new ServerException(HttpStatus.BAD_REQUEST, NO_MESSAGES_ERROR));
     return;
   }
@@ -60,7 +59,7 @@ const handleNotify = async (req, res, next) => {
     const results = await LineNotifyService.postToLineServer(messages, token);
     res.send(results);
   } catch (err) {
-    next(new ServerException(HttpStatus.INTERNAL_SERVER_ERROR, err));
+    next(new ServerException(HttpStatus.INTERNAL_SERVER_ERROR, err, err.stack));
   }
 };
 

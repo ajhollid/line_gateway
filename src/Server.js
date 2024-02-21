@@ -12,7 +12,6 @@ const upload = multer();
 const app = express();
 app.use(express.json());
 app.use(prometheusMiddleware);
-
 // ********************
 // Check for a request URL
 // If not specified, end the process
