@@ -49,7 +49,7 @@ The server expects an SSL certificate named `crt.pem` and an **unencrypted** pri
 
 ## Endpoints
 
-##### POST /notify
+#### POST /notify
 
 Post alert requets to this endpoint
 
@@ -63,10 +63,14 @@ Post alert requets to this endpoint
 
 ###### Body Data Structures
 
+${\textsf{\color{orange}Data}}$
+
 | Name   | Type         | Description     |
 | ------ | ------------ | --------------- |
 | status | string       | Status of alert |
 | alerts | array<Alert> | array of Alerts |
+
+${\textsf{\color{orange}Alert}}$
 
 | Name        | Type            | Description       |
 | ----------- | --------------- | ----------------- |
