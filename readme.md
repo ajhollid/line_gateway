@@ -65,10 +65,10 @@ Post alert requets to this endpoint
 
 ${\textsf{\color{orange}Data}}$
 
-| Name   | Type         | Description     |
-| ------ | ------------ | --------------- |
-| status | string       | Status of alert |
-| alerts | array<Alert> | array of Alerts |
+| Name   | Type                | Description     |
+| ------ | ------------------- | --------------- |
+| status | string              | Status of alert |
+| alerts | array &lt;Alert&gt; | array of Alerts |
 
 ${\textsf{\color{orange}Alert}}$
 
@@ -153,6 +153,22 @@ You can run this project in several ways:
 ```
 docker build -t <ImageTag> .
 docker run <ImageTag>
+```
+
+###### Configuration
+
+The docker file included in this project set up the server and uses [PM2 process manager](https://pm2.keymetrics.io/) to manage the process. A basic PM2 configuraiton is provided in `ecosystem.config.cjs`, please see [PM2 Docker Integration Documentation](https://pm2.keymetrics.io/docs/usage/docker-pm2-nodejs/) for more information.
+
+If you want to specify environmental variables add them to your `docker run` command as needed. For example to specify a proxy:
+
+```
+docker run -e PROXY_URL=<proxy_url> <ImageTag>
+```
+
+Or to specify a request url:
+
+```
+docker run -e REQUEST_URL=<request_url> <ImageTag>
 ```
 
 ##### 2. Direct Install in Node Environment
