@@ -10,10 +10,8 @@
     "eslint": "eslint ./src",
     "eslint-fix": "eslint ./src --fix",
     "test": "mocha ./src/tests/*.spec.js --exit",
-    "test-text-utils": "mocha ./src/tests/textUtils.spec.js --exit",
-    "test-build-messages": "mocha ./src/tests/buildMessages.spec.js --exit",
-    "test-extract-token": "mocha ./src/tests/extractTokenFromHeaders.spec.js --exit",
-    "test-extract-property": "mocha ./src/tests/extractProperty.spec.js --exit",
+    "test-text-utils": "mocha ./src/tests/TextUtils.spec.js --exit",
+    "test-message-utils": "mocha ./src/tests/MessageUtils.spec.js --exit",
     "test-notify-controller": "mocha ./src/tests/NotifyController.spec.js --exit"
   },
   "keywords": [],

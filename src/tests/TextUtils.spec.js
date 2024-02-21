@@ -3,7 +3,7 @@ import { describe, it } from "mocha";
 import TextUtils from "../utils/TextUtils.js";
 let expect = chai.expect;
 
-describe("textUtils()", () => {
+describe("TextUtils.severityColorLookup()", () => {
   describe("Severity Color Lookup", () => {
     describe("Severity: none", () => {
       it("Should return a blue emoji", () => {

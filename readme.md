@@ -15,6 +15,8 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 5. [Alertmanager Configuration](#alertmanager-configuration)
 6. [Running the Server](#running-the-server)
 7. [Adding colors for Severity Levels](#adding-colors-for-severity-levels)
+8. [Tests](#tests)
+9. [Contact Information](#contact-information)
 
 ---
 
@@ -204,5 +206,27 @@ const SEVERITY_LOOKUP = new Map([
   ["resolved", "🟢"]
 ]);
 ```
+
+---
+
+## Tests
+
+This project includes a suite of tests located in the `src/tests` directory. You can run all tests by running
+
+```
+npm run test
+```
+
+You can also run individual tests with the following commands:
+
+MessageUtils tests: `npm run test-message-utils`
+TextUtils tests: `npm run test-text-utils`
+NotifyController tests: `npm run test-notify-controller`
+
+---
+
+## Contact Information
+
+Please contact the author [Alex Holliday](mailto:ajhollid@gmail.com) if you have any questions or require assistance
 
 ![Screenshot](screenshot.png)
