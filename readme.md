@@ -45,6 +45,8 @@ If TLS is enabled the server listens for HTTPS requests on **8443**
 
 The server expects an SSL certificate named `crt.pem` and an **unencrypted** private key named `key.pem`. Place these two files in the `ssl` folder prior to building the docker image or running the server in a Node environment.
 
+---
+
 ## Endpoints
 
 ##### POST /notify
@@ -59,13 +61,17 @@ Post alert requets to this endpoint
 | authorization           | Bearer <LINE_token> |
 | content-type            | application/json    |
 
-###### Body
+###### Body Data Structures
 
-| Name              | Type            | Description       |
-| ----------------- | --------------- | ----------------- |
-| status            | string          | Status of alert   |
-| commonLabels      | Key Value pairs | Alert labels      |
-| commonAnnotations | Key Value pairs | Alert annotations |
+| Name   | Type         | Description     |
+| ------ | ------------ | --------------- |
+| status | string       | Status of alert |
+| alerts | array<Alert> | array of Alerts |
+
+| Name        | Type            | Description       |
+| ----------- | --------------- | ----------------- |
+| labels      | Key-Value pairs | Alert labels      |
+| annotations | Key-Value pairs | Alert Annotations |
 
 For further details see [Alertmanager Documentation](https://prometheus.io/docs/alerting/latest/notifications/)
 
