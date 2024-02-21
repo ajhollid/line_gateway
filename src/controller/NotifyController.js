@@ -31,8 +31,7 @@ const handleNotify = async (req, res, next) => {
   console.log(JSON.stringify(req.body, null, 2));
 
   // ********************
-  // Try to get token from headers, if not present, look for default token
-  // If no token supplied, send an error
+  // Check for token, error if not found
   // ********************
   const token = getToken(req);
 
@@ -56,8 +55,13 @@ const handleNotify = async (req, res, next) => {
     return;
   }
 
+  // ********************
+  // Post and return results from LINE server
+  // ********************
   try {
     const results = await LineNotifyService.postToLineServer(messages, token);
+    console.log(TextUtils.buildBoldLog("Successful Post Results:"));
+    console.log(JSON.stringify(results, null, 2));
     res.send(results);
   } catch (err) {
     next(new ServerException(HttpStatus.INTERNAL_SERVER_ERROR, err, err.stack));

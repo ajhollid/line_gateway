@@ -3,6 +3,6 @@ export default class ServerException extends Error {
     super(message);
     this.name = this.constructor.name;
     this.httpStatus = httpStatus;
-    this.stack = stack;
+    this.stack = stack ? stack : this.stack;
   }
 }
