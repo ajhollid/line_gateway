@@ -17,7 +17,7 @@ const mapMessagesToRequests = (messages, token) => {
       config.agent = Config.PROXY_AGENT;
     }
     return fetch(Config.REQUEST_URL, config).then((response) =>
-      response.json()
+      response.text()
     );
   });
 };

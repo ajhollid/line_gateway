@@ -10,13 +10,14 @@ const NO_ALERTS_ERROR = "No alerts found, request not sent";
 const NO_MESSAGES_ERROR = "No messages found, request not sent";
 
 const getToken = (req) => {
+  let token = null;
   if (req && req.headers) {
-    return MessageUtils.extractTokenFromHeaders(req);
-  } else if (Config.DEFAULT_LINE_TOKEN) {
-    return process.env.DEFAULT_LINE_TOKEN;
-  } else {
-    return null;
+    token = MessageUtils.extractTokenFromHeaders(req);
   }
+  if (token == null && Config.DEFAULT_LINE_TOKEN) {
+    token = Config.DEFAULT_LINE_TOKEN;
+  }
+  return token;
 };
 
 const handleNotify = async (req, res, next) => {
