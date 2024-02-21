@@ -1,13 +1,12 @@
+import sinon from "sinon";
+/* eslint-env mocha */
+import { expect } from "chai";
 import HttpStatus from "http-status-codes";
 import LineNotifyService from "../service/LineNotifyService.js";
 import NotifyController from "../controller/NotifyController.js";
 import MessageUtils from "../utils/MessageUtils.js";
 import ServerException from "../model/ServerException.js";
-import sinon from "sinon";
-import { describe, it, afterEach } from "mocha";
-import * as chai from "chai";
 
-let expect = chai.expect;
 describe("NotifyController", () => {
   afterEach(() => {
     sinon.restore();

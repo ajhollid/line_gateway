@@ -12,7 +12,8 @@
     "test": "mocha ./src/tests/*.spec.js --exit",
     "test-text-utils": "mocha ./src/tests/TextUtils.spec.js --exit",
     "test-message-utils": "mocha ./src/tests/MessageUtils.spec.js --exit",
-    "test-notify-controller": "mocha ./src/tests/NotifyController.spec.js --exit"
+    "test-notify-controller": "mocha ./src/tests/NotifyController.spec.js --exit",
+    "test-line-notify-service": "mocha ./src/tests/LineNotifyService.spec.js --exit"
   },
   "keywords": [],
   "author": "",

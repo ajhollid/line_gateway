@@ -1,8 +1,8 @@
-import * as chai from "chai";
-import { describe, it } from "mocha";
+/* eslint-env mocha */
+import { expect } from "chai";
+
 import MessageUtils from "../utils//MessageUtils.js";
 import TextUtils from "../utils/TextUtils.js";
-let expect = chai.expect;
 
 describe("MessageUtils.buildMessage()", () => {
   let alertname = "Test Alert";

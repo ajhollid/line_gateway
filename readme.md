@@ -218,10 +218,11 @@ npm run test
 ```
 
 You can also run individual tests with the following commands:
-
-MessageUtils tests: `npm run test-message-utils`  
-TextUtils tests: `npm run test-text-utils`  
-NotifyController tests: `npm run test-notify-controller`
+|Test|Command|
+|---|---|
+|MessageUtils| `npm run test-message-utils`|
+|TextUtils| `npm run test-text-utils`|  
+|NotifyController|`npm run test-notify-controller`|
 
 ---
 
