@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "LineGateway",
-      script: "./src/Server.js",
+      script: "./dist/Server.js",
       instances: 1,
       autorestart: true,
       watch: false,
