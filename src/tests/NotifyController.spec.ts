@@ -6,6 +6,8 @@ import LineNotifyService from "../service/LineNotifyService.js";
 import NotifyController from "../controller/NotifyController.js";
 import MessageUtils from "../utils/MessageUtils.js";
 import ServerException from "../model/ServerException.js";
+import { Request, Response } from "express";
+import { mockReq, mockRes } from "sinon-express-mock";
 
 describe("NotifyController", () => {
   afterEach(() => {
@@ -13,11 +15,11 @@ describe("NotifyController", () => {
   });
 
   it("should handle notify", async () => {
-    const req = {
+    const req = mockReq({
       headers: { authorization: "Bearer token" },
       body: { alerts: ["alert1", "alert2"] },
-    };
-    const res = { send: sinon.spy() };
+    });
+    const res = mockRes();
     const next = sinon.spy();
 
     const tokenStub = sinon
@@ -31,7 +33,7 @@ describe("NotifyController", () => {
       .returns(["message1", "message2"]);
     const postStub = sinon
       .stub(LineNotifyService, "postToLineServer")
-      .resolves("success");
+      .resolves(["success"]);
 
     await NotifyController.handleNotify(req, res, next);
 
@@ -39,13 +41,16 @@ describe("NotifyController", () => {
     expect(alertsStub.calledOnce).to.be.true;
     expect(messagesStub.calledOnce).to.be.true;
     expect(postStub.calledOnce).to.be.true;
-    expect(res.send.calledWith("success")).to.be.true;
+    expect(res.send.calledWith(["success"])).to.be.true;
     expect(next.called).to.be.false;
   });
 
   it("should handle empty alerts error", async () => {
-    const req = { headers: { authorization: "Bearer token" }, body: {} };
-    const res = { send: sinon.spy() };
+    const req = mockReq({
+      headers: { authorization: "Bearer token" },
+      body: {},
+    });
+    const res = mockRes();
     const next = sinon.spy();
 
     const tokenStub = sinon
@@ -67,8 +72,11 @@ describe("NotifyController", () => {
   });
 
   it("should handle request with no token", async () => {
-    const req = { headers: { authorization: "Bearer token" }, body: {} };
-    const res = { send: sinon.spy() };
+    const req = mockReq({
+      headers: { authorization: "Bearer token" },
+      body: {},
+    });
+    const res = mockRes();
     const next = sinon.spy();
 
     const tokenStub = sinon
@@ -88,11 +96,11 @@ describe("NotifyController", () => {
   });
 
   it("should handle empty messages", async () => {
-    const req = {
+    const req = mockReq({
       headers: { authorization: "Bearer token" },
       body: { alerts: ["alert1", "alert2"] },
-    };
-    const res = { send: sinon.spy() };
+    });
+    const res = mockRes();
     const next = sinon.spy();
 
     const tokenStub = sinon
@@ -116,11 +124,11 @@ describe("NotifyController", () => {
   });
 
   it("should handle empty body", async () => {
-    const req = {
+    const req = mockReq({
       headers: { authorization: "Bearer token" },
-      body: null,
-    };
-    const res = { send: sinon.spy() };
+      body: {},
+    });
+    const res = mockRes();
     const next = sinon.spy();
 
     const tokenStub = sinon

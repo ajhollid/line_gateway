@@ -1,5 +1,6 @@
 import express from "express";
-import multer from "multer";
+import { Express } from "express";
+import multer, { Multer } from "multer";
 import TextUtils from "./utils/TextUtils.js";
 import prometheusMiddleware from "./middleware/PrometheusMiddleware.js";
 import errorHandler from "./middleware/ErrorHandlerMiddleware.js";
@@ -8,8 +9,8 @@ import HealthController from "./controller/HealthController.js";
 import Config from "./config/Config.js";
 import HttpServerSetup from "./config/HttpServerSetup.js";
 
-const upload = multer();
-const app = express();
+const upload: Multer = multer();
+const app: Express = express();
 app.use(express.json());
 app.use(prometheusMiddleware);
 // ********************

@@ -1,30 +1,42 @@
+import AppConfig from "../model/AppConfig.js";
 import ServerException from "../model/ServerException.js";
 import LineNotifyService from "../service/LineNotifyService.js";
 import { expect } from "chai";
 /* eslint-env mocha */
+
+const nullConfig: AppConfig = {
+  PROXY_URL: null,
+  REQUEST_URL: null,
+  ENABLE_TLS: null,
+  HTTPS_PORT: null,
+  PORT: 0,
+  DEFAULT_LINE_TOKEN: null,
+};
 describe("LineNotifyService.createConfig()", () => {
   describe("Verify the method is POST", () => {
     it("Should return a config object with a method of POST", () => {
-      expect(LineNotifyService.createConfig(null, "test", {}).method).to.equal(
-        "POST"
-      );
+      expect(
+        LineNotifyService.createConfig(new FormData(), "test", nullConfig)
+          .method
+      ).to.equal("POST");
     });
   });
 
   describe("Verify auth headers", () => {
     it("Should return a config object with authorization headers", () => {
       expect(
-        LineNotifyService.createConfig(null, "test", {}).headers.Authorization
+        LineNotifyService.createConfig(null, "test", nullConfig).headers
+          .Authorization
       ).to.equal("Bearer test");
     });
   });
 
   describe("Create config without proxy or body", () => {
-    const appConfig = {};
     it("Should return a config object without a body or proxy", () => {
       expect(
-        LineNotifyService.createConfig(null, "test", appConfig)
+        LineNotifyService.createConfig(null, "test", nullConfig)
       ).to.deep.equal({
+        agent: null,
         method: "POST",
         body: null,
         headers: {
@@ -35,13 +47,15 @@ describe("LineNotifyService.createConfig()", () => {
   });
 
   describe("Create config with proxy but no body", () => {
-    const config = {
+    const config: AppConfig = {
       PROXY_URL: "http://localhost:8080",
+      REQUEST_URL: null,
+      ENABLE_TLS: null,
+      HTTPS_PORT: null,
+      PORT: 0,
+      DEFAULT_LINE_TOKEN: null,
     };
 
-    console.log(
-      LineNotifyService.createConfig(null, "test", config).agent.proxy.href
-    );
     it("Should return a config with a proxy and null body", () => {
       expect(
         LineNotifyService.createConfig(null, "test", config).agent.proxy.href
@@ -55,22 +69,27 @@ describe("LineNotifyService.createConfig()", () => {
   describe("Create config with body but no proxy", () => {
     const form = new FormData();
     form.append("message", "test");
-    const config = {};
     it("Should return a config with a body and no proxy", () => {
       expect(
-        LineNotifyService.createConfig(form, "test", config).body
+        LineNotifyService.createConfig(form, "test", nullConfig).body
       ).to.equal(form);
       expect(
-        LineNotifyService.createConfig(form, "test", config).agent
-      ).to.equal(undefined);
+        LineNotifyService.createConfig(form, "test", nullConfig).agent
+      ).to.equal(null);
     });
   });
 
   describe("Create config with proxy and body", () => {
     const form = new FormData();
     form.append("message", "test");
-    const config = {
+
+    const config: AppConfig = {
       PROXY_URL: "http://localhost:8080",
+      REQUEST_URL: null,
+      ENABLE_TLS: null,
+      HTTPS_PORT: null,
+      PORT: 0,
+      DEFAULT_LINE_TOKEN: null,
     };
     it("Should return a config with a body and proxy", () => {
       expect(
@@ -86,7 +105,7 @@ describe("LineNotifyService.createConfig()", () => {
 describe("LineNotifyService.createForm", () => {
   describe("Create form with no message", () => {
     it("Should throw an error", () => {
-      expect(() => LineNotifyService.createForm()).to.throw(
+      expect(() => LineNotifyService.createForm(null)).to.throw(
         ServerException,
         LineNotifyService.MESSAGE_ERROR
       );

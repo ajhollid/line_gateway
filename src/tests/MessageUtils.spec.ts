@@ -1,33 +1,43 @@
 /* eslint-env mocha */
 import { expect } from "chai";
 
-import MessageUtils from "../utils//MessageUtils.js";
+import MessageUtils from "../utils/MessageUtils.js";
 import TextUtils from "../utils/TextUtils.js";
+import { mockReq } from "sinon-express-mock";
+import Alert from "../model/Alert.js";
 
 describe("MessageUtils.buildMessage()", () => {
-  let alertname = "Test Alert";
-  let status = "Firing";
-  let severity = "critical";
-  let unknownSeverity = "unknownSeverity";
-  let summary = "Test Summary";
-  let description = "Test Description";
+  const alertname: string = "Test Alert";
+  const status: string = "Firing";
+  const severity: string = "critical";
+  const unknownSeverity: string = "unknownSeverity";
+  const summary: string = "Test Summary";
+  const description: string = "Test Description";
 
   describe("Build messages from null array", () => {
     it("Should return an empty message", () => {
-      expect(MessageUtils.buildMessages(null)).deep.to.equal([]);
+      expect(MessageUtils.buildMessages(null)).to.deep.equal([]);
     });
   });
 
   describe("Build message array with empty lables and empty annotations", () => {
     it("Should return an array with one empty message", () => {
-      let sampleAlert = { labels: {}, annotations: {} };
-      expect(MessageUtils.buildMessages([sampleAlert])).deep.to.equal([]);
+      let sampleAlert: Alert = {
+        labels: {},
+        annotations: {},
+        status: null,
+      };
+      expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([]);
     });
   });
 
   describe("Build message array with one message and alert name only", () => {
     it("Should return an array with one message with only an alert name", () => {
-      let sampleAlert = { labels: { alertname } };
+      let sampleAlert: Alert = {
+        labels: { alertname },
+        annotations: {},
+        status: null,
+      };
       expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nAlert Name: " + alertname,
       ]);
@@ -36,7 +46,11 @@ describe("MessageUtils.buildMessage()", () => {
 
   describe("Build message array with one message and status only", () => {
     it("Should return an array with one message with a status", () => {
-      let sampleAlert = { status };
+      let sampleAlert: Alert = {
+        labels: { status },
+        annotations: {},
+        status,
+      };
       expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nStatus: " + status,
       ]);
@@ -45,7 +59,11 @@ describe("MessageUtils.buildMessage()", () => {
 
   describe("Build message array with one message with severity level only", () => {
     it("Should return an array with one message with a severity level", () => {
-      let sampleAlert = { labels: { severity } };
+      let sampleAlert: Alert = {
+        labels: { severity },
+        annotations: {},
+        status: null,
+      };
       expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nSeverity: " +
           TextUtils.severityColorLookup(severity) +
@@ -56,8 +74,13 @@ describe("MessageUtils.buildMessage()", () => {
 
   describe("Build message array with one message with unknown severity level only", () => {
     it("Should return an array with one message with default severity level", () => {
-      const severityEmoji = TextUtils.severityColorLookup(unknownSeverity);
-      let sampleAlert = { labels: { severity: unknownSeverity } };
+      const severityEmoji: string =
+        TextUtils.severityColorLookup(unknownSeverity);
+      let sampleAlert: Alert = {
+        labels: { severity: unknownSeverity },
+        annotations: {},
+        status: null,
+      };
       expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nSeverity: " + severityEmoji + ` ${unknownSeverity}`,
       ]);
@@ -66,7 +89,11 @@ describe("MessageUtils.buildMessage()", () => {
 
   describe("Build message array with one message with summary only", () => {
     it("Should return an array of messages with one message with a summary", () => {
-      let sampleAlert = { annotations: { summary } };
+      let sampleAlert: Alert = {
+        labels: {},
+        annotations: { summary },
+        status: null,
+      };
       expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nSummary: " + summary,
       ]);
@@ -75,7 +102,11 @@ describe("MessageUtils.buildMessage()", () => {
 
   describe("Build an array of messages with one message with description only", () => {
     it("Should return an array of messages with one message with a description", () => {
-      let sampleAlert = { annotations: { description } };
+      let sampleAlert: Alert = {
+        labels: {},
+        annotations: { description },
+        status: null,
+      };
       expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nDescription: " + description,
       ]);
@@ -84,16 +115,10 @@ describe("MessageUtils.buildMessage()", () => {
 
   describe("Build message array with one message with undefined fields", () => {
     it("Should return a message with an empty message", () => {
-      let sampleAlert = {
-        labels: {
-          alertname: undefined,
-          severity: undefined,
-        },
-        annotations: {
-          summary: undefined,
-          description: undefined,
-        },
-        status: undefined,
+      let sampleAlert: Alert = {
+        labels: { alertname: undefined, severity: undefined },
+        annotations: { summary: undefined, description: undefined },
+        status: null,
       };
       expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([]);
     });
@@ -101,11 +126,12 @@ describe("MessageUtils.buildMessage()", () => {
 
   describe("Build message array with one message with all fields", () => {
     it("Should return an array of messages with one properly built message", () => {
-      let sampleAlert = {
-        status,
+      let sampleAlert: Alert = {
         labels: { alertname, severity },
         annotations: { summary, description },
+        status,
       };
+
       expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
         "\nAlert Name: " +
           alertname +
@@ -127,7 +153,7 @@ describe("MessageUtils.buildMessage()", () => {
 
   describe("Build message array with two messages with all fields", () => {
     it("Should return an array of messages with two properly built message", () => {
-      let sampleAlert = {
+      let sampleAlert: Alert = {
         status,
         labels: { alertname, severity },
         annotations: { summary, description },
@@ -170,13 +196,13 @@ describe("MessageUtils.buildMessage()", () => {
 
   describe("Build message array with one message with all fields and one message with empty fields", () => {
     it("Should return an array of messages with one properly built message", () => {
-      let sampleAlert = {
+      let sampleAlert: Alert = {
         status,
         labels: { alertname, severity },
         annotations: { summary, description },
       };
 
-      let badAlert = {
+      let badAlert: Alert = {
         labels: {
           alertname: undefined,
           severity: undefined,
@@ -270,24 +296,26 @@ describe("MessageUtils.extractTokenFromHeaders()", () => {
 
   describe("Try to extract token from request with no headers", () => {
     it("Should return null", () => {
-      expect(MessageUtils.extractTokenFromHeaders({})).to.equal(null);
+      expect(MessageUtils.extractTokenFromHeaders(mockReq())).to.equal(null);
     });
   });
 
   describe("Try to extract token from headers with no auth", () => {
     it("Should return null", () => {
-      expect(MessageUtils.extractTokenFromHeaders({ headers: {} })).to.equal(
-        null
-      );
+      expect(
+        MessageUtils.extractTokenFromHeaders(mockReq({ headers: {} }))
+      ).to.equal(null);
     });
   });
 
   describe("Try to extract token from headers with no bearer token", () => {
     it("Should return null", () => {
       expect(
-        MessageUtils.extractTokenFromHeaders({
-          headers: { authorization: "test" },
-        })
+        MessageUtils.extractTokenFromHeaders(
+          mockReq({
+            headers: { authorization: "test" },
+          })
+        )
       ).to.equal(null);
     });
   });
@@ -295,9 +323,11 @@ describe("MessageUtils.extractTokenFromHeaders()", () => {
   describe("Try to extract token from headers with bearer token", () => {
     it("Should return " + testToken, () => {
       expect(
-        MessageUtils.extractTokenFromHeaders({
-          headers: { authorization: "Bearer " + testToken },
-        })
+        MessageUtils.extractTokenFromHeaders(
+          mockReq({
+            headers: { authorization: "Bearer " + testToken },
+          })
+        )
       ).to.equal(testToken);
     });
   });
@@ -305,9 +335,11 @@ describe("MessageUtils.extractTokenFromHeaders()", () => {
   describe("Try to extract token from headers with invalid token format", () => {
     it("Should return null", () => {
       expect(
-        MessageUtils.extractTokenFromHeaders({
-          headers: { authorization: 123 },
-        })
+        MessageUtils.extractTokenFromHeaders(
+          mockReq({
+            headers: { authorization: 123 },
+          })
+        )
       ).to.equal(null);
     });
   });

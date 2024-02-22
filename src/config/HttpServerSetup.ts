@@ -1,4 +1,4 @@
-import Config from "./Config.js";
+import { Express } from "express";
 import fs from "fs";
 import path from "path";
 import http from "http";
@@ -7,11 +7,13 @@ import HttpStatus from "http-status-codes";
 import { fileURLToPath } from "url";
 import TextUtils from "../utils/TextUtils.js";
 import ServerException from "../model/ServerException.js";
+import Config from "./Config.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const HTTPS_ERROR = "Something went wrong starting HTTPS server";
 
-const setupHttps = (app) => {
+const setupHttps = (app: Express) => {
   try {
     const key = fs.readFileSync(path.join(__dirname, "../../ssl/key.pem"));
     const cert = fs.readFileSync(path.join(__dirname, "../../ssl/crt.pem"));
@@ -24,11 +26,15 @@ const setupHttps = (app) => {
     });
   } catch (err) {
     console.log(TextUtils.buildBoldLog(HTTPS_ERROR));
-    throw new ServerException(HttpStatus.INTERNAL_SERVER_ERROR, HTTPS_ERROR);
+    throw new ServerException(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      HTTPS_ERROR,
+      null
+    );
   }
 };
 
-const setupHttp = (app) => {
+const setupHttp = (app: Express) => {
   http.createServer(app).listen(Config.PORT, () => {
     console.log(
       TextUtils.buildBoldLog(`Listening for HTTP on port: ${Config.PORT}`)
@@ -36,7 +42,7 @@ const setupHttp = (app) => {
   });
 };
 
-const setupServer = (app) => {
+const setupServer = (app: Express) => {
   // ************************
   // If SSL has been enabled, start the HTTPS server, otherwise start HTTP Server
   // ************************

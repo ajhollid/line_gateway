@@ -1,20 +1,27 @@
 import Config from "../config/Config.js";
-import fetch from "node-fetch";
+import fetch, { Response } from "node-fetch";
 import HttpStatus from "http-status-codes";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import ServerException from "../model/ServerException.js";
+import AppConfig from "../model/AppConfig";
+import RequestConfig from "../model/RequestConfig.js";
 const MESSAGE_ERROR = "Message is required";
 // ********************
 // Create a POST config for fetch
 // Uses proxy if specified
 // ********************
-const createConfig = (form, token, appConfig) => {
-  const config = {
+const createConfig = (
+  form: FormData,
+  token: string,
+  appConfig: AppConfig
+): RequestConfig => {
+  const config: RequestConfig = {
     method: "POST",
     body: form,
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    agent: null,
   };
 
   if (appConfig.PROXY_URL) {
@@ -23,11 +30,11 @@ const createConfig = (form, token, appConfig) => {
   return config;
 };
 
-const createForm = (message) => {
+const createForm = (message: string): FormData => {
   if (!message) {
-    throw new ServerException(HttpStatus.BAD_REQUEST, MESSAGE_ERROR);
+    throw new ServerException(HttpStatus.BAD_REQUEST, MESSAGE_ERROR, null);
   }
-  const form = new FormData();
+  const form: FormData = new FormData();
   form.append("message", message);
   return form;
 };
@@ -35,12 +42,15 @@ const createForm = (message) => {
 // ********************
 // Maps each message to a fetch request
 // ********************
-const mapMessagesToRequests = async (messages, token) => {
+const mapMessagesToRequests = async (
+  messages: Array<string>,
+  token: string
+): Promise<(string | object)[]> => {
   return messages.map(async (message) => {
-    const form = createForm(message);
-    const postConfig = createConfig(form, token, Config);
-    const response = await fetch(Config.REQUEST_URL, postConfig);
-    const text = await response.text();
+    const form: FormData = createForm(message);
+    const postConfig: RequestConfig = createConfig(form, token, Config);
+    const response: Response = await fetch(Config.REQUEST_URL, postConfig);
+    const text: string = await response.text();
     try {
       return JSON.parse(text);
     } catch (err) {
@@ -52,7 +62,10 @@ const mapMessagesToRequests = async (messages, token) => {
 // ********************
 // Send all messages
 // ********************
-const postToLineServer = async (messages, token) => {
+const postToLineServer = async (
+  messages: Array<string>,
+  token: string
+): Promise<(string | object)[]> => {
   const requests = await mapMessagesToRequests(messages, token);
   return Promise.all(requests);
 };
