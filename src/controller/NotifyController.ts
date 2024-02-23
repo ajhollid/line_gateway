@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import HttpStatus from "http-status-codes";
 import LineNotifyService from "../service/LineNotifyService.js";
 import Config from "../config/Config.js";
-import Alert from "../model/Alert.js";
+import Alert, { isAlert } from "../model/Alert.js";
 import TextUtils from "../utils/TextUtils.js";
 import MessageUtils from "../utils/MessageUtils.js";
 import ServerException from "../model/ServerException.js";
@@ -41,7 +41,7 @@ const handleNotify = async (
   const token = getToken(req);
 
   if (!token) {
-    next(new ServerException(HttpStatus.UNAUTHORIZED, NO_TOKEN_ERROR, null));
+    next(new ServerException(HttpStatus.UNAUTHORIZED, NO_TOKEN_ERROR));
     return;
   }
 
@@ -49,14 +49,18 @@ const handleNotify = async (
   // Build message for LINE server
   // ********************
   const alerts: Array<Alert> = MessageUtils.extractProperty(req.body, "alerts");
-  if (!alerts) {
-    next(new ServerException(HttpStatus.BAD_REQUEST, NO_ALERTS_ERROR, null));
+  if (
+    !alerts ||
+    !Array.isArray(alerts) ||
+    alerts.some((alert) => !isAlert(alert))
+  ) {
+    next(new ServerException(HttpStatus.BAD_REQUEST, NO_ALERTS_ERROR));
     return;
   }
 
   let messages: Array<string> = MessageUtils.buildMessages(alerts);
   if (messages.length <= 0) {
-    next(new ServerException(HttpStatus.BAD_REQUEST, NO_MESSAGES_ERROR, null));
+    next(new ServerException(HttpStatus.BAD_REQUEST, NO_MESSAGES_ERROR));
     return;
   }
 

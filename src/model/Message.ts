@@ -1,10 +1,10 @@
 import TextUtils from "../utils/TextUtils.js";
 export default class Message {
-  alertname: string = null;
-  status: string = null;
-  severity: string = null;
-  summary: string = null;
-  description: string = null;
+  private readonly alertname: string;
+  private readonly status: string;
+  private readonly severity: string;
+  private readonly summary: string;
+  private readonly description: string;
 
   constructor(
     alertname: string,
@@ -20,19 +20,24 @@ export default class Message {
     this.description = description;
   }
 
-  buildMessage(): string {
-    console.log("STATUS:", this.status);
-    let messageParts: Array<String> = [];
-    this.alertname && messageParts.push(`Alert Name: ${this.alertname}`);
-    this.status && messageParts.push(`Status: ${this.status}`);
-    this.severity &&
-      messageParts.push(
+  private buildMessage(): string {
+    const messageParts: Array<string> = [
+      this.alertname && `Alert Name: ${this.alertname}`,
+      this.status && `Status: ${this.status}`,
+      this.severity &&
         `Severity: ${TextUtils.severityColorLookup(this.severity)} ${
           this.severity
-        }`
-      );
-    this.summary && messageParts.push(`Summary: ${this.summary}`);
-    this.description && messageParts.push(`Description: ${this.description}`);
-    return messageParts.length > 0 ? `\n${messageParts.join("\n")}` : null;
+        }`,
+      this.summary && `Summary: ${this.summary}`,
+      this.description && `Description: ${this.description}`,
+    ];
+
+    const message = messageParts.filter(Boolean).join("\n");
+
+    return message ? `\n${message}` : null;
+  }
+
+  toString(): string {
+    return this.buildMessage();
   }
 }

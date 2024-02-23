@@ -21,7 +21,6 @@ const createConfig = (
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    agent: null,
   };
 
   if (appConfig.PROXY_URL) {
@@ -66,8 +65,27 @@ const postToLineServer = async (
   messages: Array<string>,
   token: string
 ): Promise<(string | object)[]> => {
+  if (!Array.isArray(messages)) {
+    throw new ServerException(
+      HttpStatus.BAD_REQUEST,
+      "Messages must be an array"
+    );
+  }
+
+  if (messages.length === 0) {
+    throw new ServerException(
+      HttpStatus.BAD_REQUEST,
+      "Messages must not be empty"
+    );
+  }
   const requests = await mapMessagesToRequests(messages, token);
   return Promise.all(requests);
 };
 
-export default { createConfig, createForm, postToLineServer, MESSAGE_ERROR };
+export default {
+  createConfig,
+  createForm,
+  postToLineServer,
+  mapMessagesToRequests,
+  MESSAGE_ERROR,
+};

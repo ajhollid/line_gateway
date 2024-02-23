@@ -5,7 +5,7 @@ import Annotations from "../model/Annotations.js";
 import Message from "../model/Message.js";
 
 const extractTokenFromHeaders = (req: Request): string => {
-  let authHeader: string = req?.headers?.authorization;
+  const authHeader: string = req?.headers?.authorization;
   if (typeof authHeader == "string" && authHeader.startsWith("Bearer ")) {
     return authHeader.substring(7, authHeader.length);
   }
@@ -29,7 +29,7 @@ const buildMessages = (alerts: Array<Alert>): Array<string> => {
       const severity: string = extractProperty(labels, "severity");
       const summary: string = extractProperty(annotations, "summary");
       const description: string = extractProperty(annotations, "description");
-      let message: Message = new Message(
+      const message: Message = new Message(
         alertname,
         status,
         severity,
@@ -37,7 +37,7 @@ const buildMessages = (alerts: Array<Alert>): Array<string> => {
         description
       );
 
-      return message.buildMessage();
+      return message.toString();
     })
     .filter(Boolean);
 };

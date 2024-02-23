@@ -236,38 +236,34 @@ describe("MessageUtils.buildMessage()", () => {
   });
 });
 
-describe("MessageUtils.extractCommonLabelsFromReq()", () => {
+describe("MessageUtils.extractProperty()", () => {
   describe("Try to extract labels from undefined body", () => {
     it("Should return null", () => {
-      expect(MessageUtils.extractProperty(undefined), "commonLabels").to.equal(
-        null
-      );
+      expect(MessageUtils.extractProperty(undefined), "labels").to.equal(null);
     });
   });
 
   describe("Try to extract labels from request with empty body", () => {
     it("Should return null", () => {
-      expect(MessageUtils.extractProperty({}), "commonLabels").to.deep.equal(
-        null
-      );
+      expect(MessageUtils.extractProperty({}), "labels").to.deep.equal(null);
     });
   });
 
-  describe("Try to extract labels from request with no common labels", () => {
+  describe("Try to extract labels from request with no labels", () => {
     it("Should return null", () => {
       expect(
-        MessageUtils.extractProperty({ commonLabels: {} }),
-        "commonLabels"
+        MessageUtils.extractProperty({ labels: {} }),
+        "labels"
       ).to.deep.equal(null);
     });
   });
 
   describe("Try to extract labels from request with common labels", () => {
-    it("Should return common labels object", () => {
+    it("Should return labels object", () => {
       expect(
         MessageUtils.extractProperty(
-          { commonLabels: { label1: "test", label2: "test2" } },
-          "commonLabels"
+          { labels: { label1: "test", label2: "test2" } },
+          "labels"
         )
       ).to.deep.equal({ label1: "test", label2: "test2" });
     });
@@ -277,7 +273,7 @@ describe("MessageUtils.extractCommonLabelsFromReq()", () => {
     it("Should return null", () => {
       expect(
         MessageUtils.extractProperty(
-          { commonLabels: { label1: "test", label2: "test2" } },
+          { labels: { label1: "test", label2: "test2" } },
 
           "nonexistantProperty"
         )

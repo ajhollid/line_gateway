@@ -1,11 +1,15 @@
 export default class ServerException extends Error {
-  httpStatus: number;
-  stack: any;
+  readonly httpStatus: number;
+  readonly stack?: string;
 
-  constructor(httpStatus: number, message: string, stack: any) {
+  constructor(httpStatus: number, message: string, stack?: string) {
     super(message);
     this.name = this.constructor.name;
     this.httpStatus = httpStatus;
-    this.stack = stack ? stack : this.stack;
+    if (stack) {
+      this.stack = stack;
+    } else {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 }

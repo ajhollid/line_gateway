@@ -2,16 +2,11 @@ import AppConfig from "../model/AppConfig.js";
 import ServerException from "../model/ServerException.js";
 import LineNotifyService from "../service/LineNotifyService.js";
 import { expect } from "chai";
+import sinon from "sinon";
 /* eslint-env mocha */
 
-const nullConfig: AppConfig = {
-  PROXY_URL: null,
-  REQUEST_URL: null,
-  ENABLE_TLS: null,
-  HTTPS_PORT: null,
-  PORT: 0,
-  DEFAULT_LINE_TOKEN: null,
-};
+const nullConfig: AppConfig = {};
+
 describe("LineNotifyService.createConfig()", () => {
   describe("Verify the method is POST", () => {
     it("Should return a config object with a method of POST", () => {
@@ -36,7 +31,6 @@ describe("LineNotifyService.createConfig()", () => {
       expect(
         LineNotifyService.createConfig(null, "test", nullConfig)
       ).to.deep.equal({
-        agent: null,
         method: "POST",
         body: null,
         headers: {
@@ -49,11 +43,6 @@ describe("LineNotifyService.createConfig()", () => {
   describe("Create config with proxy but no body", () => {
     const config: AppConfig = {
       PROXY_URL: "http://localhost:8080",
-      REQUEST_URL: null,
-      ENABLE_TLS: null,
-      HTTPS_PORT: null,
-      PORT: 0,
-      DEFAULT_LINE_TOKEN: null,
     };
 
     it("Should return a config with a proxy and null body", () => {
@@ -75,7 +64,7 @@ describe("LineNotifyService.createConfig()", () => {
       ).to.equal(form);
       expect(
         LineNotifyService.createConfig(form, "test", nullConfig).agent
-      ).to.equal(null);
+      ).to.equal(undefined);
     });
   });
 
@@ -85,11 +74,6 @@ describe("LineNotifyService.createConfig()", () => {
 
     const config: AppConfig = {
       PROXY_URL: "http://localhost:8080",
-      REQUEST_URL: null,
-      ENABLE_TLS: null,
-      HTTPS_PORT: null,
-      PORT: 0,
-      DEFAULT_LINE_TOKEN: null,
     };
     it("Should return a config with a body and proxy", () => {
       expect(
@@ -126,6 +110,29 @@ describe("LineNotifyService.createForm", () => {
       expect(LineNotifyService.createForm("test").get("message")).to.equal(
         "test"
       );
+    });
+  });
+});
+
+describe("LineNotifyService.postToLineServer", () => {
+  describe("Post null to LINE", () => {
+    it("Should throw an error", async () => {
+      try {
+        await LineNotifyService.postToLineServer(null, "test");
+      } catch (err) {
+        expect(err).to.be.an.instanceOf(ServerException);
+        expect(err.httpStatus).to.equal(400);
+      }
+    });
+  });
+  describe("Post empty array to LINE", () => {
+    it("Should throw an error", async () => {
+      try {
+        await LineNotifyService.postToLineServer([], "test");
+      } catch (err) {
+        expect(err).to.be.an.instanceOf(ServerException);
+        expect(err.httpStatus).to.equal(400);
+      }
     });
   });
 });

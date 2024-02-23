@@ -6,8 +6,8 @@ import LineNotifyService from "../service/LineNotifyService.js";
 import NotifyController from "../controller/NotifyController.js";
 import MessageUtils from "../utils/MessageUtils.js";
 import ServerException from "../model/ServerException.js";
-import { Request, Response } from "express";
 import { mockReq, mockRes } from "sinon-express-mock";
+import Alert from "../model/Alert.js";
 
 describe("NotifyController", () => {
   afterEach(() => {
@@ -15,19 +15,23 @@ describe("NotifyController", () => {
   });
 
   it("should handle notify", async () => {
+    const alerts: Array<Alert> = [
+      { status: "firing", labels: {}, annotations: {} },
+      { status: "firing", labels: {}, annotations: {} },
+    ];
+
     const req = mockReq({
       headers: { authorization: "Bearer token" },
-      body: { alerts: ["alert1", "alert2"] },
+      body: { alerts },
     });
     const res = mockRes();
     const next = sinon.spy();
-
     const tokenStub = sinon
       .stub(MessageUtils, "extractTokenFromHeaders")
       .returns("token");
     const alertsStub = sinon
       .stub(MessageUtils, "extractProperty")
-      .returns(["alert1", "alert2"]);
+      .returns(alerts);
     const messagesStub = sinon
       .stub(MessageUtils, "buildMessages")
       .returns(["message1", "message2"]);
@@ -36,7 +40,6 @@ describe("NotifyController", () => {
       .resolves(["success"]);
 
     await NotifyController.handleNotify(req, res, next);
-
     expect(tokenStub.calledOnce).to.be.true;
     expect(alertsStub.calledOnce).to.be.true;
     expect(messagesStub.calledOnce).to.be.true;
@@ -96,9 +99,13 @@ describe("NotifyController", () => {
   });
 
   it("should handle empty messages", async () => {
+    const alerts: Array<Alert> = [
+      { status: "firing", labels: {}, annotations: {} },
+      { status: "firing", labels: {}, annotations: {} },
+    ];
     const req = mockReq({
       headers: { authorization: "Bearer token" },
-      body: { alerts: ["alert1", "alert2"] },
+      body: { alerts },
     });
     const res = mockRes();
     const next = sinon.spy();
@@ -108,7 +115,7 @@ describe("NotifyController", () => {
       .returns("token");
     const alertsStub = sinon
       .stub(MessageUtils, "extractProperty")
-      .returns(["alert1", "alert2"]);
+      .returns(alerts);
     const messagesStub = sinon.stub(MessageUtils, "buildMessages").returns([]);
 
     await NotifyController.handleNotify(req, res, next);

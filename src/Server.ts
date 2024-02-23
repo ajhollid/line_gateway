@@ -42,5 +42,4 @@ app.get("/health", HealthController.getHealth);
 // *********************
 // Error handling
 // *********************
-// eslint-disable-next-line no-unused-vars
 app.use(errorHandler);

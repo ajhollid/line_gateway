@@ -11,9 +11,9 @@
     "eslint": "eslint ./src",
     "eslint-fix": "eslint ./src --fix",
     "test": "mocha ./src/tests/*.spec.ts --exit",
-    "test-text-utils": "mocha ./dist/tests/TextUtils.spec.ts --exit",
+    "test-text-utils": "mocha ./src/tests/TextUtils.spec.ts --exit",
     "test-message-utils": "mocha ./src/tests/MessageUtils.spec.ts --exit",
-    "test-notify-controller": "mocha ./dist/tests/NotifyController.spec.ts --exit",
+    "test-notify-controller": "mocha ./src/tests/NotifyController.spec.ts --exit",
     "test-line-notify-service": "mocha ./src/tests/LineNotifyService.spec.ts --exit"
   },
   "keywords": [],
