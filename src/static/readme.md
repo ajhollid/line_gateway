@@ -89,6 +89,12 @@ ${\textsf{\color{orange}Alert}}$
 
 For further details see [Alertmanager Documentation](https://prometheus.io/docs/alerting/latest/notifications/)
 
+##### GET /
+
+###### Response
+
+Returns this readme
+
 ##### GET /health
 
 ###### Response

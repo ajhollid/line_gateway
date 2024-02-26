@@ -19,7 +19,7 @@ const getHealth = (req: Request, res: Response, next: NextFunction) => {
   const healthCheck: HealthCheck = {
     uptime,
     message: "OK",
-    timestamp: new Date(Date.now()).toLocaleString(),
+    timestamp: new Date(Date.now()).toUTCString(),
   };
   try {
     res.send(healthCheck);
