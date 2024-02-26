@@ -184,7 +184,7 @@ docker run -e REQUEST_URL=<request_url> <ImageTag>
 
 ## Adding colors for severity levels
 
-Colors for severity levels are mapped in `src/utils/TextUtils.js`
+Colors for severity levels are mapped in `src/utils/TextUtils.ts`
 
 ```
 const SEVERITY_LOOKUP = new Map([
@@ -207,6 +207,8 @@ const SEVERITY_LOOKUP = new Map([
 ]);
 ```
 
+A similar map for Status icons is present in `src/utils/TextUtils.ts` as well and can be edited in the same fasion as Severity.
+
 ---
 
 ## Tests
@@ -223,6 +225,7 @@ You can also run individual tests with the following commands:
 |MessageUtils| `npm run test-message-utils`|
 |TextUtils| `npm run test-text-utils`|  
 |NotifyController|`npm run test-notify-controller`|
+|LineNotifyService|`npm run test-line-notify-service`|
 
 ---
 

@@ -8,7 +8,7 @@ import Alert from "../model/Alert.js";
 
 describe("MessageUtils.buildMessage()", () => {
   const alertname: string = "Test Alert";
-  const status: string = "Firing";
+  const status: string = "firing";
   const severity: string = "critical";
   const unknownSeverity: string = "unknownSeverity";
   const summary: string = "Test Summary";
@@ -52,7 +52,7 @@ describe("MessageUtils.buildMessage()", () => {
         status,
       };
       expect(MessageUtils.buildMessages([sampleAlert])).to.deep.equal([
-        "\nStatus: " + status,
+        "\nStatus: " + TextUtils.statusLookup(status) + ` ${status}`,
       ]);
     });
   });
@@ -136,7 +136,8 @@ describe("MessageUtils.buildMessage()", () => {
         "\nAlert Name: " +
           alertname +
           "\nStatus: " +
-          status +
+          TextUtils.statusLookup(status) +
+          ` ${status}` +
           "\n" +
           "Severity: " +
           TextUtils.severityColorLookup(severity) +
@@ -154,9 +155,9 @@ describe("MessageUtils.buildMessage()", () => {
   describe("Build message array with two messages with all fields", () => {
     it("Should return an array of messages with two properly built message", () => {
       let sampleAlert: Alert = {
-        status,
         labels: { alertname, severity },
         annotations: { summary, description },
+        status,
       };
 
       expect(
@@ -165,7 +166,8 @@ describe("MessageUtils.buildMessage()", () => {
         "\nAlert Name: " +
           alertname +
           "\nStatus: " +
-          status +
+          TextUtils.statusLookup(status) +
+          ` ${status}` +
           "\n" +
           "Severity: " +
           TextUtils.severityColorLookup(severity) +
@@ -179,7 +181,8 @@ describe("MessageUtils.buildMessage()", () => {
         "\nAlert Name: " +
           alertname +
           "\nStatus: " +
-          status +
+          TextUtils.statusLookup(status) +
+          ` ${status}` +
           "\n" +
           "Severity: " +
           TextUtils.severityColorLookup(severity) +
@@ -219,7 +222,8 @@ describe("MessageUtils.buildMessage()", () => {
           "\nAlert Name: " +
             alertname +
             "\nStatus: " +
-            status +
+            TextUtils.statusLookup(status) +
+            ` ${status}` +
             "\n" +
             "Severity: " +
             TextUtils.severityColorLookup(severity) +

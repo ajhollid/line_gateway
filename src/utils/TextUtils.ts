@@ -18,6 +18,7 @@ const severityColorLookup = (severity: string): string => {
 };
 
 const statusLookup = (status: string) => {
+  console.log("WHAT: ", status);
   return STATUS_LOOKUP.has(status)
     ? STATUS_LOOKUP.get(status)
     : STATUS_LOOKUP.get("default");
