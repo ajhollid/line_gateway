@@ -6,6 +6,9 @@ import { marked } from "marked";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+marked.use({
+  gfm: true,
+});
 
 const getReadme = (req: Request, res: Response, next: NextFunction) => {
   let readme: Buffer = fs.readFileSync(

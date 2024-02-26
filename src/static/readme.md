@@ -20,6 +20,8 @@ This server listens for requests from Prometheus Alert Manager, translates the r
 
 ---
 
+<a name="gateway-configuration"></a>
+
 ## Gateway Configuration
 
 Configure the LINE Gateway with the following environmental variables:
@@ -35,6 +37,8 @@ Configure the LINE Gateway with the following environmental variables:
 
 ---
 
+<a name="ports"></a>
+
 ## Ports
 
 This server listens for HTTP requests on port **8080**.
@@ -43,11 +47,15 @@ If TLS is enabled the server listens for HTTPS requests on **8443**
 
 ---
 
+<a name="tls-configuration"></a>
+
 ## TLS Configuration
 
 The server expects an SSL certificate named `crt.pem` and an **unencrypted** private key named `key.pem`. Place these two files in the `ssl` folder prior to building the docker image or running the server in a Node environment.
 
 ---
+
+<a name="endpoints"></a>
 
 ## Endpoints
 
@@ -103,6 +111,8 @@ Prometheus metrics
 
 ---
 
+<a name="alertmanager-configuration"></a>
+
 ## Alertmanager Configuration
 
 The server expects a request from the Prometheus Alertmanager with LINE token specified in the header:
@@ -110,8 +120,7 @@ The server expects a request from the Prometheus Alertmanager with LINE token sp
 ##### Sample Request Headers
 
 ```
-{
-  host: <host>,
+{gateway-configuration
   'user-agent': 'Alertmanager/0.26.0',
   'content-length': '894',
   authorization: 'Bearer <line_token>',
@@ -145,6 +154,8 @@ xjHyPpa8FukJU0EDJpRpP8dzT0G8uEPH13yJZbKnCMG
 In order not to be exposed, the credential file can be stored as a secret which the docker image can mount.
 
 ---
+
+<a name="running-the-server"></a>
 
 ## Running the server
 
@@ -180,7 +191,7 @@ docker run -e REQUEST_URL=<request_url> <ImageTag>
 
 ---
 
-<a name="add-colors"></a>
+<a name="adding-colors-for-severity-levels"></a>
 
 ## Adding colors for severity levels
 
@@ -211,6 +222,8 @@ A similar map for Status icons is present in `src/utils/TextUtils.ts` as well an
 
 ---
 
+<a name="tests"></a>
+
 ## Tests
 
 This project includes a suite of tests located in the `src/tests` directory. You can run all tests by running
@@ -228,6 +241,8 @@ You can also run individual tests with the following commands:
 |LineNotifyService|`npm run test-line-notify-service`|
 
 ---
+
+<a name="contact-information"></a>
 
 ## Contact Information
 
