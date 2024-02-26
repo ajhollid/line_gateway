@@ -7,11 +7,11 @@ export default class Message {
   private readonly description: string;
 
   constructor(
-    alertname: string,
-    status: string,
-    severity: string,
-    summary: string,
-    description: string
+    alertname?: string,
+    status?: string,
+    severity?: string,
+    summary?: string,
+    description?: string
   ) {
     this.alertname = alertname;
     this.status = status;
@@ -21,9 +21,10 @@ export default class Message {
   }
 
   private buildMessage(): string {
-    const messageParts: Array<string> = [
+    let messageParts: Array<string> = [
       this.alertname && `Alert Name: ${this.alertname}`,
-      this.status && `Status: ${this.status}`,
+      this.status &&
+        `Status: ${TextUtils.statusLookup(this.status)} ${this.status}`,
       this.severity &&
         `Severity: ${TextUtils.severityColorLookup(this.severity)} ${
           this.severity

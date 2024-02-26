@@ -10,3 +10,4 @@ tag_and_push.sh
 tsb_tag_and_push.sh
 build_docker_image.sh
 *.pem
+headers.js

@@ -8,6 +8,7 @@ import NotifyController from "./controller/NotifyController.js";
 import HealthController from "./controller/HealthController.js";
 import Config from "./config/Config.js";
 import HttpServerSetup from "./config/HttpServerSetup.js";
+import Message from "./model/Message.js";
 
 const upload: Multer = multer();
 const app: Express = express();
