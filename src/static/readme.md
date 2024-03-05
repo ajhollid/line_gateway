@@ -195,6 +195,12 @@ docker run -e REQUEST_URL=<request_url> <ImageTag>
 1.  Run `npm install` to install packages
 2.  Run `npm start` to start server
 
+##### 3. Build project and run in Node Environment
+
+1.  Run `npm install` to install packages
+2.  Run `npm run build` to compile the typescript app to `./dist`
+3.  In the `./dist` folder run `node Server.js` to start the server
+
 ---
 
 <a name="adding-colors-for-severity-levels"></a>
