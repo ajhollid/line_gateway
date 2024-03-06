@@ -27,17 +27,19 @@ const buildMessages = (alerts: Array<Alert>): Array<string> => {
       const annotations: Annotations = alert.annotations;
       const alertname: string = extractProperty(labels, "alertname");
       const severity: string = extractProperty(labels, "severity");
+      const message: string = extractProperty(annotations, "message");
       const summary: string = extractProperty(annotations, "summary");
       const description: string = extractProperty(annotations, "description");
-      const message: Message = new Message(
+      const lineMsg: Message = new Message(
         alertname,
         status,
         severity,
+        message,
         summary,
         description
       );
 
-      return message.toString();
+      return lineMsg.toString();
     })
     .filter(Boolean);
 };
