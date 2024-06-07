@@ -1,4 +1,4 @@
-![](https://img.shields.io/github/license/ajhollid/line_gateway.svg?style=flat)
+![](https://img.shields.io/github/license/ajhollid/line_gateway.svg?style=flat)(../LICENSE)
 ![](https://img.shields.io/github/repo-size/ajhollid/line_gateway.svg?style=flat)
 ![](https://img.shields.io/github/last-commit/ajhollid/line_gateway.svg?style=flat)
 ![](https://img.shields.io/github/languages/top/ajhollid/line_gateway.svg?style=flat)
