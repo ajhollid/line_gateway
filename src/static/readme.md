@@ -1,9 +1,8 @@
-![](https://img.shields.io/npm/v/kepler-utils.svg?style=flat)
 ![](https://img.shields.io/github/license/ajhollid/line_gateway.svg?style=flat)
-![](https://img.shields.io/github/repo-size/ajhollid/line_gatewat.svg?style=flat)
-![](https://img.shields.io/github/downloads/ajhollid/line_gatewat/total.svg?style=flat)
-![](https://img.shields.io/github/last-commit/ajhollid/line_gatewat.svg?style=flat)
-![](https://img.shields.io/github/languages/top/ajhollid/line_gatewat.svg?style=flat)
+![](https://img.shields.io/github/repo-size/ajhollid/line_gateway.svg?style=flat)
+![](https://img.shields.io/github/downloads/ajhollid/line_gateway/total.svg?style=flat)
+![](https://img.shields.io/github/last-commit/ajhollid/line_gateway.svg?style=flat)
+![](https://img.shields.io/github/languages/top/ajhollid/line_gateway.svg?style=flat)
 
 # LINE Notify Gateway
 
